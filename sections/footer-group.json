@@ -1,0 +1,71 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "static-footer",
+      "blocks": {
+        "0a74d57d-4271-4295-b6d0-04e6ff22b028": {
+          "type": "rich_text",
+          "settings": {
+            "title": "Shopialo",
+            "text": "<p>¡Somos el shopping a un click<br/>más seductor!</p><p><strong>clientes@shopialo.com</strong></p><p>Tel: +502 3026 2561<br/></p>"
+          }
+        },
+        "d7fc2c79-acc1-4273-b10f-f655abf5a04b": {
+          "type": "rich_text",
+          "disabled": true,
+          "settings": {
+            "title": "Rich text",
+            "text": "<p>Use this section to welcome customers to your store, say a bit about your brand, or share news and seasonal promotions.</p>"
+          }
+        },
+        "rich_text_6HTkyn": {
+          "type": "rich_text",
+          "settings": {
+            "title": "Nuestra tienda",
+            "text": "<p><strong>SHOPIALO STORE </strong></p><p>OfiBodegas Bouganvilias, bodega #19, Calz. la Paz 00-39, Cdad. de Guatemala, zona 18 </p><p>Tel: +502 3140 2519<br/><br/></p>"
+          }
+        },
+        "static-footer-1": {
+          "type": "newsletter",
+          "settings": {
+            "title": "Suscríbete",
+            "text": "<p>Ingresa tu correo para recibir las mejores promociones.</p>"
+          }
+        },
+        "846d3aa2-f317-438b-bf75-2d7b23c3dae6": {
+          "type": "social_accounts",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "0a74d57d-4271-4295-b6d0-04e6ff22b028",
+        "d7fc2c79-acc1-4273-b10f-f655abf5a04b",
+        "rich_text_6HTkyn",
+        "static-footer-1",
+        "846d3aa2-f317-438b-bf75-2d7b23c3dae6"
+      ],
+      "custom_css": [],
+      "settings": {
+        "show_follow_on_shop": true,
+        "payment_icons": true,
+        "show_locale_selector": true,
+        "show_currency_selector": true,
+        "additional_menu": "footer"
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

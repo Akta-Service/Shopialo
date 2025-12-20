@@ -1,0 +1,207 @@
+<!-- Swiper CSS -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+/>
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<style>
+  .collection-nav-wrapper {
+    padding: 60px 0;
+  }
+  .collection-nav-container {
+    max-width: 1600px;
+    margin: auto;
+    padding: 0 25px;
+  }
+
+  .collection-nav-title {
+    margin: 0 0 30px;
+    font-family: Muli, sans-serif;
+    font-style: normal;
+    font-weight: 800;
+    text-transform: none;
+    font-size: var(--font-size-section-heading);
+    letter-spacing: .05em;
+  }
+
+  .collection-nav-item {
+    text-align: center;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .collection-nav-image {
+    margin-bottom: 20px;
+  }
+
+  .collection-nav-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 0;
+    display: block;
+    aspect-ratio: 1 / 1.1;
+  }
+
+  .collection-nav-label {
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: none;
+    margin: 0;
+  }
+
+  .collectionSwiper .swiper-slide {
+    max-width: 400px;
+  }
+  .collection-nav-btn:after{
+    display: none;
+   }
+  .collection-nav-btn{
+    width: 40px;
+    height: 40px;
+    border: 1px solid #000;
+    border-radius: 3px;
+    background: #fff;
+    transition: 0.3s;
+   }
+  .collection-nav-btn svg{
+    width: 25px;
+    height: 25px;
+    color: #000;
+    transition: 0.3s;
+   }
+   .collection-nav-btn:hover{
+        background: #000;
+    }
+    .collection-nav-btn:hover svg{
+        color: #fff;
+    }
+    @media (max-width: 991px){
+        .collection-nav-container {           
+            padding: 0 15px;
+        }
+    }
+    @media (max-width: 768px){
+        .collection-nav-container {           
+            padding: 0 10px;
+        }
+        .collection-nav-wrapper {
+            padding: 40px 0;
+        }
+    }
+    @media (max-width: 600px){
+        .collection-nav-btn {
+            width: 30px;
+            height: 30px;            
+        }
+        .collection-nav-btn svg {
+            width: 20px;
+            height: 20px;            
+        }
+    }
+
+
+
+
+</style>
+<div class="collection-nav-wrapper">
+<div class="collection-nav-container">
+  {% if section.settings.title != blank %}
+    <h2 class="collection-nav-title">{{ section.settings.title }}</h2>
+  {% endif %}
+
+  <div class="swiper collectionSwiper">
+    <div class="swiper-wrapper">
+        {% assign collection = section.settings.collection %}
+
+      {% for collection in collection %}
+        {% if collection %}
+          <div class="swiper-slide" {{ block.shopify_attributes }}>
+            <a href="{{ collection.url }}" class="collection-nav-item">
+              <div class="collection-nav-image">
+                {% if collection.image %}
+                  <img 
+                    src="{{ collection.image.src | img_url: 'master' }}" width="" height=""
+                    alt="{{ collection.title }}"
+                  >
+                {% else %}
+                  <div class="placeholder"></div>
+                {% endif %}
+              </div>
+            </a>
+            <a href="{{ collection.url }}" class="collection-nav-item">
+              <p class="collection-nav-label">{{ collection.title }}</p>
+            </a>
+          </div>
+        {% endif %}
+      {% endfor %}
+
+    </div>
+
+    <!-- Nav arrows -->
+    <div class="swiper-button-prev collection-nav-btn">
+        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="200px" width="200px" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"></path></svg>
+    </div>
+    <div class="swiper-button-next collection-nav-btn">
+       <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="200px" width="200px" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path></svg>
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+
+
+
+{% schema %}
+{
+  "name": "Collection Navigation",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Shop Collections"
+    },
+    {
+        "type": "collection_list",
+        "id": "collection",
+        "label": "Collections"
+    }
+  ],
+ 
+
+
+  "presets": [
+    {
+      "name": "Collection Navigation"
+    }
+  ]
+}
+{% endschema %}
+
+
+
+<!-- Swiper Init -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    new Swiper(".collectionSwiper", {
+      slidesPerView: 1.2,
+      spaceBetween: 16,
+      loop: false,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {        
+        500: { slidesPerView: 1.7 },
+        600: { slidesPerView: 2.5 },
+        740: { slidesPerView: 3 },
+        1024: { slidesPerView: 4 },
+        1324: { slidesPerView: 5 },
+      }
+    });
+  });
+</script>

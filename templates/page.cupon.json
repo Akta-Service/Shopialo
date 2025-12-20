@@ -1,0 +1,221 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "page",
+      "disabled": true,
+      "settings": {}
+    },
+    "3d3d53c9-47d5-4879-b694-036bc0f95d42": {
+      "type": "dynamic-logo-list",
+      "blocks": {
+        "template--16377011568877__3d3d53c9-47d5-4879-b694-036bc0f95d42-logo-2": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Skechers_fondo_blanco.png",
+            "link": "shopify://collections/sketchers"
+          }
+        },
+        "template--16377011568877__3d3d53c9-47d5-4879-b694-036bc0f95d42-logo-3": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/New_Era_logo.png",
+            "link": "shopify://collections/new-era-2"
+          }
+        },
+        "template--16377011568877__3d3d53c9-47d5-4879-b694-036bc0f95d42-logo-4": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/psycho-bunny.webp",
+            "link": "shopify://collections/pyscho-bunny"
+          }
+        },
+        "08409ca2-b05e-4f50-adb7-ca33c52aa2ca": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/330860641_711905740483993_1714795608612108504_n.jpg",
+            "link": "shopify://collections/nappa"
+          }
+        },
+        "30888640-48fd-4355-9596-755ad965312b": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Logo-3_2a0b5ecb-525a-47e9-821f-d14f8eff8669.png",
+            "link": "shopify://collections/velez"
+          }
+        },
+        "template--16377011568877__3d3d53c9-47d5-4879-b694-036bc0f95d42-logo-1": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/original-penguin-logo.webp",
+            "link": "shopify://collections/penguin"
+          }
+        },
+        "0ed2d6d2-72f5-4c29-b87e-51485f8afa3a": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Superga_logo_Shopialo.png",
+            "link": ""
+          }
+        },
+        "b2facb1e-3d3d-4a7e-8233-fd2d4926a61c": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Logo_Nava.png",
+            "link": "shopify://collections/nava-wear"
+          }
+        },
+        "f4eecb17-46b9-4a98-8820-9eb58911470a": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/L_OCCITANE_BlueLogo_YellowBackground_120Wx50L_PANTONE.png",
+            "link": "shopify://collections/l-occitane"
+          }
+        },
+        "2546346a-d351-49c7-b150-413797c51703": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/PierreCardin_ff738dd4-7dea-4b2f-a36d-dee94a3b3acc.png",
+            "link": "shopify://collections/pierre-cardin-1"
+          }
+        },
+        "eee2cc5e-4002-457d-bbf9-c670fc14d85d": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Holler_-_Logo-18.jpg",
+            "link": "shopify://collections/holler"
+          }
+        }
+      },
+      "block_order": [
+        "template--16377011568877__3d3d53c9-47d5-4879-b694-036bc0f95d42-logo-2",
+        "template--16377011568877__3d3d53c9-47d5-4879-b694-036bc0f95d42-logo-3",
+        "template--16377011568877__3d3d53c9-47d5-4879-b694-036bc0f95d42-logo-4",
+        "08409ca2-b05e-4f50-adb7-ca33c52aa2ca",
+        "30888640-48fd-4355-9596-755ad965312b",
+        "template--16377011568877__3d3d53c9-47d5-4879-b694-036bc0f95d42-logo-1",
+        "0ed2d6d2-72f5-4c29-b87e-51485f8afa3a",
+        "b2facb1e-3d3d-4a7e-8233-fd2d4926a61c",
+        "f4eecb17-46b9-4a98-8820-9eb58911470a",
+        "2546346a-d351-49c7-b150-413797c51703",
+        "eee2cc5e-4002-457d-bbf9-c670fc14d85d"
+      ],
+      "disabled": true,
+      "settings": {
+        "title": ""
+      }
+    },
+    "47950f87-dab3-42ab-9cdd-e8b19ea91034": {
+      "type": "dynamic-promo-mosaic",
+      "blocks": {
+        "template--16377011568877__47950f87-dab3-42ab-9cdd-e8b19ea91034-promotion-1": {
+          "type": "promotion",
+          "settings": {
+            "image": "shopify://shop_images/2_766aaf2f-e968-42cc-a386-e93180ae091b.jpg",
+            "title": "Mosaic",
+            "text": "Use this section to welcome customers to your store, say a bit about your brand, or share news.",
+            "color": "#4d4d4d",
+            "block_link": "",
+            "button_text": "",
+            "button_style": "primary",
+            "show_overlay": true,
+            "background": "#949494",
+            "opacity": 13
+          }
+        },
+        "template--16377011568877__47950f87-dab3-42ab-9cdd-e8b19ea91034-promotion-2": {
+          "type": "promotion",
+          "settings": {
+            "title": "Mosaic",
+            "text": "Use this section to welcome customers to your store, say a bit about your brand, or share news.",
+            "color": "#4d4d4d",
+            "block_link": "",
+            "button_text": "",
+            "button_style": "primary",
+            "show_overlay": false,
+            "background": "",
+            "opacity": 50
+          }
+        },
+        "template--16377011568877__47950f87-dab3-42ab-9cdd-e8b19ea91034-promotion-3": {
+          "type": "promotion",
+          "settings": {
+            "title": "Mosaic",
+            "text": "Use this section to welcome customers to your store, say a bit about your brand, or share news.",
+            "color": "#4d4d4d",
+            "block_link": "",
+            "button_text": "",
+            "button_style": "primary",
+            "show_overlay": false,
+            "background": "",
+            "opacity": 50
+          }
+        }
+      },
+      "block_order": [
+        "template--16377011568877__47950f87-dab3-42ab-9cdd-e8b19ea91034-promotion-1",
+        "template--16377011568877__47950f87-dab3-42ab-9cdd-e8b19ea91034-promotion-2",
+        "template--16377011568877__47950f87-dab3-42ab-9cdd-e8b19ea91034-promotion-3"
+      ],
+      "disabled": true,
+      "settings": {
+        "title": "Todo para tu mejor look",
+        "section_height": "medium",
+        "text_alignment": "top-right",
+        "maintain_aspect_ratio": true,
+        "compress_blocks": true
+      }
+    },
+    "dynamic_slideshow_g9cXHW": {
+      "type": "dynamic-slideshow",
+      "blocks": {
+        "slide_eRrtzm": {
+          "type": "slide",
+          "settings": {
+            "background_image": "shopify://shop_images/Cupon_LND-02_2.png",
+            "title": "",
+            "text": "",
+            "color": "#ffffff",
+            "link": "",
+            "text_alignment": "center",
+            "button_one_label": "",
+            "button_one_link": "",
+            "button_one_style": "primary",
+            "button_two_label": "",
+            "button_two_link": "",
+            "button_two_style": "primary",
+            "show_overlay": false,
+            "overlay_color": "#000000",
+            "overlay_opacity": 1
+          }
+        }
+      },
+      "block_order": [
+        "slide_eRrtzm"
+      ],
+      "name": "t:sections.slideshow.presets.slideshow.name",
+      "settings": {
+        "enable_autoplay": false,
+        "autoplay_duration": 8,
+        "slideshow_width": "full",
+        "slideshow_height": "adapt",
+        "slideshow_height_mobile": "adapt",
+        "slideshow_text_below_image": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "3d3d53c9-47d5-4879-b694-036bc0f95d42",
+    "47950f87-dab3-42ab-9cdd-e8b19ea91034",
+    "dynamic_slideshow_g9cXHW"
+  ]
+}

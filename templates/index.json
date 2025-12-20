@@ -1,0 +1,692 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "dynamic_slideshow": {
+      "type": "dynamic-slideshow",
+      "blocks": {
+        "slide_6tpM7w": {
+          "type": "slide",
+          "settings": {
+            "background_image": "shopify://shop_images/Banner_Web.jpg",
+            "mobile_background_image": "shopify://shop_images/Banner_web_movil.jpg",
+            "title": "",
+            "text": "",
+            "color": "#ffffff",
+            "link": "https://shopialo.com/pages/marcas",
+            "text_alignment": "center",
+            "button_one_label": "",
+            "button_one_link": "",
+            "button_one_style": "primary",
+            "button_two_label": "",
+            "button_two_link": "",
+            "button_two_style": "primary",
+            "show_overlay": true,
+            "overlay_color": "#000000",
+            "overlay_opacity": 1
+          }
+        }
+      },
+      "block_order": [
+        "slide_6tpM7w"
+      ],
+      "settings": {
+        "enable_autoplay": true,
+        "autoplay_duration": 5,
+        "slideshow_width": "full",
+        "slideshow_height": "adapt",
+        "slideshow_height_mobile": "adapt",
+        "slideshow_text_below_image": false
+      }
+    },
+    "dynamic_highlights_banner": {
+      "type": "dynamic-highlights-banner",
+      "blocks": {
+        "highlight-1": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-delivery-package",
+            "title": "Envíos",
+            "text": "<p>a toda <strong>Guatemala</strong> </p>",
+            "link": ""
+          }
+        },
+        "highlight-2": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-delivery-door",
+            "title": "Recibe",
+            "text": "<p>En la puerta de tu casa</p>",
+            "link": ""
+          }
+        },
+        "highlight-3": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-store",
+            "title": "Tienda Shopialo",
+            "text": "<p>Puedes recoger tu compra en nuestra tienda ubicada en <a href=\"https://www.waze.com/en/live-map/directions/capital-park-calzada-la-paz-6-50-zona-5,-guatemala?place=w.176619666.1766262200.25249387\" target=\"_blank\" title=\"https://www.waze.com/en/live-map/directions/capital-park-calzada-la-paz-6-50-zona-5,-guatemala?place=w.176619666.1766262200.25249387\">Calzada la Paz zona 5, capital park</a></p>",
+            "link": ""
+          }
+        },
+        "highlight-4": {
+          "type": "highlight",
+          "settings": {
+            "icon": "icon-credit-card",
+            "title": "Pago Seguro",
+            "text": "<p>Utiliza tus tarjetas de crédito o debito en nuestro sitio seguro</p>",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "highlight-1",
+        "highlight-2",
+        "highlight-3",
+        "highlight-4"
+      ],
+      "disabled": true,
+      "settings": {
+        "section_spacing": false,
+        "section_width": "content-width",
+        "icon_layout": "center",
+        "color": "#1d1d1d",
+        "icon_color": "#949494",
+        "background_color": "#ffffff",
+        "mobile_layout": "grid"
+      }
+    },
+    "dynamic_logo_list_iHfqwF": {
+      "type": "dynamic-logo-list",
+      "blocks": {
+        "logo_CB6DMx": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Cat_Mujer_90d9e344-9685-4b2e-ac44-9f5107c2107e.png",
+            "link": "shopify://collections/mujer-1"
+          }
+        },
+        "logo_KRkFV3": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Cat_Hombre_4152943c-9159-4a6d-86f5-64874d674c5a.png",
+            "link": "shopify://collections/hombre"
+          }
+        },
+        "logo_RejVj4": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Cat_Ninos_87120409-84c4-4ee3-acdd-99cac2ee2d1a.png",
+            "link": "shopify://collections/hurley-kids"
+          }
+        },
+        "logo_yEYmWX": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Cat_Belleza_f0da84d5-1ef2-4446-a1d2-1c51e8a43cd6.png",
+            "link": "shopify://collections/cuidado-corporal"
+          }
+        },
+        "logo_bPDLQE": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Cat_Calzado_7a78e088-6584-4779-a245-ec77cff9418b.png",
+            "link": "shopify://collections/calzado-zapatos-m"
+          }
+        },
+        "logo_6gxAA3": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Cat_Accesorios_493931e0-3e92-4075-ae92-28b74841294e.png",
+            "link": "shopify://collections/cosmetiqueras"
+          }
+        },
+        "logo_e8BwJk": {
+          "type": "logo",
+          "disabled": true,
+          "settings": {
+            "image": "shopify://shop_images/Cat_Morrales_73351192-b188-4da8-ac8e-c683a4f94055.png",
+            "link": "shopify://collections/bolsas-mochilas-maletines-y-mas"
+          }
+        },
+        "logo_68H6RT": {
+          "type": "logo",
+          "disabled": true,
+          "settings": {
+            "image": "shopify://shop_images/Cat_Bolsos_5738ce09-1422-48ed-952a-afb30ddcc770.png",
+            "link": "shopify://collections/bolsos-1"
+          }
+        }
+      },
+      "block_order": [
+        "logo_CB6DMx",
+        "logo_KRkFV3",
+        "logo_RejVj4",
+        "logo_yEYmWX",
+        "logo_bPDLQE",
+        "logo_6gxAA3",
+        "logo_e8BwJk",
+        "logo_68H6RT"
+      ],
+      "disabled": true,
+      "custom_css": [],
+      "settings": {
+        "title": ""
+      }
+    },
+    "pxs_image_with_text_overlay_gBWHV8": {
+      "type": "pxs-image-with-text-overlay",
+      "disabled": true,
+      "settings": {
+        "section_height": "original",
+        "image": "shopify://shop_images/BANNER_1332X538px_v2_1.png",
+        "title": "",
+        "text": "",
+        "content_position": "center-center",
+        "color": "#ffffff",
+        "overlay_background": "#000000",
+        "overlay_opacity": 0,
+        "link": "shopify://collections/ropa",
+        "button_text": ""
+      }
+    },
+    "dynamic_promo_mosaic_dafxxw": {
+      "type": "dynamic-promo-mosaic",
+      "settings": {
+        "title": "",
+        "section_height": "small",
+        "text_alignment": "top-left",
+        "maintain_aspect_ratio": false,
+        "compress_blocks": false
+      }
+    },
+    "dynamic_shoppable_image_kpyWqh": {
+      "type": "dynamic-shoppable-image",
+      "disabled": true,
+      "name": "t:sections.shoppable_image.presets.shoppable_image.name",
+      "settings": {
+        "title": "",
+        "image": "shopify://shop_images/BANNER_1044X360px_HURLEY_b8aee86c-6813-421c-a811-87fe60476422.png",
+        "image_width": "full",
+        "link_text": "",
+        "textbox_title": "",
+        "textbox_subheading": "",
+        "textbox_button_label": "comprar ahora",
+        "textbox_button_link": "https://shopialo.com/collections/sale-hurley",
+        "textbox_button_style": "primary",
+        "textbox_text_alignment": "left",
+        "textbox_text_position": "right"
+      }
+    },
+    "dynamic_featured_collection_nUHprE": {
+      "type": "dynamic-featured-collection",
+      "disabled": true,
+      "settings": {
+        "title": "Sudaderos de caballeros",
+        "layout": "grid",
+        "mobile_layout": "grid",
+        "collection": "sudaderos-hombre",
+        "product_count": 5,
+        "cta_label": "Ver más",
+        "cta_button_style": "primary"
+      }
+    },
+    "dynamic_featured_collection_7jhE7U": {
+      "type": "dynamic-featured-collection",
+      "disabled": true,
+      "settings": {
+        "title": "Pants de dama",
+        "layout": "grid",
+        "mobile_layout": "grid",
+        "collection": "pants",
+        "product_count": 5,
+        "cta_label": "Ver más",
+        "cta_button_style": "primary"
+      }
+    },
+    "dynamic_logo_list_peKnAT": {
+      "type": "dynamic-logo-list",
+      "blocks": {
+        "logo_frUHMi": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Las-mejores-marcas_FlyUp.png",
+            "link": "shopify://collections/fly-up"
+          }
+        },
+        "logo_MxiQtD": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Las-mejores-marcas_Velez.png",
+            "link": "shopify://collections/velez"
+          }
+        },
+        "logo_tUMfdz": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Las-mejores-marcas_Hurley.png",
+            "link": "shopify://collections/hurley"
+          }
+        },
+        "logo_3FYBbQ": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Las-mejores-marcas_NAVA.png",
+            "link": "shopify://collections/nava-wear"
+          }
+        }
+      },
+      "block_order": [
+        "logo_frUHMi",
+        "logo_MxiQtD",
+        "logo_tUMfdz",
+        "logo_3FYBbQ"
+      ],
+      "disabled": true,
+      "settings": {
+        "title": ""
+      }
+    },
+    "dynamic_promo_mosaic_fCp9PJ": {
+      "type": "dynamic-promo-mosaic",
+      "name": "t:sections.mosaic.presets.mosaic.name",
+      "settings": {
+        "title": "",
+        "section_height": "small",
+        "text_alignment": "top-left",
+        "maintain_aspect_ratio": false,
+        "compress_blocks": false
+      }
+    },
+    "dynamic_promo_mosaic_hkxLkp": {
+      "type": "dynamic-promo-mosaic",
+      "name": "t:sections.mosaic.presets.mosaic.name",
+      "settings": {
+        "title": "",
+        "section_height": "small",
+        "text_alignment": "top-left",
+        "maintain_aspect_ratio": false,
+        "compress_blocks": false
+      }
+    },
+    "dynamic_promo_mosaic_bLrYrJ": {
+      "type": "dynamic-promo-mosaic",
+      "blocks": {
+        "promotion_ffJUYA": {
+          "type": "promotion",
+          "settings": {
+            "image": "shopify://shop_images/Banner_Principal_06ab6b81-3906-41c2-90e4-00b4ac7f9d42.png",
+            "title": "",
+            "text": "",
+            "color": "#4d4d4d",
+            "block_link": "shopify://collections/fly-up",
+            "button_text": "",
+            "button_style": "primary",
+            "show_overlay": false,
+            "background": "",
+            "opacity": 1
+          }
+        },
+        "promotion_q8N9nJ": {
+          "type": "promotion",
+          "settings": {
+            "image": "shopify://shop_images/Banner2_9f00bb0a-24b0-4496-9031-f1d7abbfe13c.gif",
+            "title": "",
+            "text": "",
+            "color": "#4d4d4d",
+            "block_link": "shopify://collections/new-era-2",
+            "button_text": "",
+            "button_style": "primary",
+            "show_overlay": false,
+            "background": "",
+            "opacity": 50
+          }
+        },
+        "promotion_GmpWiH": {
+          "type": "promotion",
+          "settings": {
+            "image": "shopify://shop_images/Banner3.gif",
+            "title": "",
+            "text": "",
+            "color": "#4d4d4d",
+            "block_link": "shopify://collections/kits-loccitane",
+            "button_text": "",
+            "button_style": "primary",
+            "show_overlay": false,
+            "background": "",
+            "opacity": 50
+          }
+        }
+      },
+      "block_order": [
+        "promotion_ffJUYA",
+        "promotion_q8N9nJ",
+        "promotion_GmpWiH"
+      ],
+      "name": "t:sections.mosaic.presets.mosaic.name",
+      "settings": {
+        "title": "",
+        "section_height": "small",
+        "text_alignment": "top-left",
+        "maintain_aspect_ratio": false,
+        "compress_blocks": false
+      }
+    },
+    "pxs_image_with_text_overlay_QhHN79": {
+      "type": "pxs-image-with-text-overlay",
+      "disabled": true,
+      "settings": {
+        "section_height": "original",
+        "image": "shopify://shop_images/003_1800X538px.png",
+        "title": "",
+        "text": "",
+        "content_position": "center-center",
+        "color": "#ffffff",
+        "overlay_background": "#000000",
+        "overlay_opacity": 0,
+        "link": "shopify://collections/lo-nuevo",
+        "button_text": ""
+      }
+    },
+    "dynamic_slideshow_FG7mqB": {
+      "type": "dynamic-slideshow",
+      "blocks": {
+        "slide_Pk3HkC": {
+          "type": "slide",
+          "disabled": true,
+          "settings": {
+            "background_image": "shopify://shop_images/003_1800X538px.png",
+            "title": "",
+            "text": "",
+            "color": "#ffffff",
+            "link": "shopify://collections/lo-nuevo",
+            "text_alignment": "center",
+            "button_one_label": "",
+            "button_one_link": "",
+            "button_one_style": "primary",
+            "button_two_label": "",
+            "button_two_link": "",
+            "button_two_style": "primary",
+            "show_overlay": true,
+            "overlay_color": "#000000",
+            "overlay_opacity": 1
+          }
+        }
+      },
+      "block_order": [
+        "slide_Pk3HkC"
+      ],
+      "disabled": true,
+      "settings": {
+        "enable_autoplay": true,
+        "autoplay_duration": 8,
+        "slideshow_width": "full",
+        "slideshow_height": "medium",
+        "slideshow_height_mobile": "medium",
+        "slideshow_text_below_image": true
+      }
+    },
+    "dynamic_featured_collection_m9p6Rh": {
+      "type": "dynamic-featured-collection",
+      "disabled": true,
+      "settings": {
+        "title": "MAS VENDIDOS",
+        "layout": "grid",
+        "mobile_layout": "grid",
+        "collection": "mas-vendidos",
+        "product_count": 6,
+        "cta_label": "VER TODO",
+        "cta_button_style": "primary"
+      }
+    },
+    "dynamic_collection_list_rBdfLa": {
+      "type": "dynamic-collection-list",
+      "blocks": {
+        "collection_mcbnYD": {
+          "type": "collection",
+          "settings": {
+            "collection": "sale",
+            "image": "shopify://shop_images/Descuentos_Velez.png",
+            "title": ""
+          }
+        },
+        "collection_pKB7D8": {
+          "type": "collection",
+          "settings": {
+            "collection": "sale",
+            "image": "shopify://shop_images/Descuentos_Hurley.png",
+            "title": ""
+          }
+        },
+        "collection_xhhJeT": {
+          "type": "collection",
+          "settings": {
+            "collection": "sale",
+            "image": "shopify://shop_images/Descuentos_Nava.png",
+            "title": ""
+          }
+        }
+      },
+      "block_order": [
+        "collection_mcbnYD",
+        "collection_pKB7D8",
+        "collection_xhhJeT"
+      ],
+      "disabled": true,
+      "settings": {
+        "title": "",
+        "thumbnail_columns_desktop": 3,
+        "thumbnail_columns_mobile": 2,
+        "image-crop": "original",
+        "cta_label": "",
+        "cta_link": "",
+        "cta_button_style": "primary"
+      }
+    },
+    "dynamic_logo_list_mrAy9g": {
+      "type": "dynamic-logo-list",
+      "blocks": {
+        "logo_JVdeJC": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Descuentos_Hurley.png",
+            "link": "shopify://collections/sale"
+          }
+        },
+        "logo_JLkw9E": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Descuentos_Nava.png",
+            "link": "shopify://collections/sale"
+          }
+        },
+        "logo_4RJ4fe": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Descuentos_Velez.png",
+            "link": "shopify://collections/sale"
+          }
+        }
+      },
+      "block_order": [
+        "logo_JVdeJC",
+        "logo_JLkw9E",
+        "logo_4RJ4fe"
+      ],
+      "disabled": true,
+      "settings": {
+        "title": ""
+      }
+    },
+    "92c4fb92-671f-4616-bd67-1b615a8595ce": {
+      "type": "dynamic-html",
+      "disabled": true,
+      "settings": {
+        "title": "Custom HTML",
+        "custom_html": "<p>Write or paste your HTML code here</p>"
+      }
+    },
+    "pxs_image_with_text_overlay_ML78Cp": {
+      "type": "pxs-image-with-text-overlay",
+      "disabled": true,
+      "name": "t:sections.image_with_text_overlay.presets.name",
+      "settings": {
+        "section_height": "original",
+        "title": "",
+        "text": "",
+        "content_position": "center-center",
+        "color": "#ffffff",
+        "overlay_background": "#000000",
+        "overlay_opacity": 0,
+        "link": "https://shopialo.com/collections/sale-velez",
+        "button_text": ""
+      }
+    },
+    "1659710257a8ab5e82": {
+      "type": "dynamic-logo-list",
+      "blocks": {
+        "165971025761093583-1": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Marcas-Skechers.png",
+            "link": "shopify://collections/skechers"
+          }
+        },
+        "c512f8b7-d946-47cc-89c2-b135d3adb4d6": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Marcas-NewEra.png",
+            "link": "shopify://collections/new-era-2"
+          }
+        },
+        "899d7be1-e783-421a-bd56-a68ca89c474f": {
+          "type": "logo",
+          "disabled": true,
+          "settings": {
+            "image": "shopify://shop_images/Marcas-Psycho-Bunny.png",
+            "link": ""
+          }
+        },
+        "80049a68-ee9a-487d-860a-dfb1ab87022f": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Marcas-NAPPA.png",
+            "link": "https://shopialo.com/collections/nappa"
+          }
+        },
+        "165971025761093583-2": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Marcas-Velez.png",
+            "link": "shopify://collections/velez"
+          }
+        },
+        "cba04ac1-0b64-4e64-af6d-515cf0e551d1": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Marcas-Hurley.png",
+            "link": "shopify://collections/hurley"
+          }
+        },
+        "logo_6VX6WN": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Marcas-FlyUp.png",
+            "link": "shopify://collections/fly-up"
+          }
+        },
+        "c05c4313-d3a2-4d38-9835-1414e7e08088": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Marcas-PENGUIN.png",
+            "link": "https://shopialo.com/collections/penguin"
+          }
+        },
+        "394470e6-c5e7-425c-a195-8671d9b46e1c": {
+          "type": "logo",
+          "disabled": true,
+          "settings": {
+            "image": "shopify://shop_images/Marcas-SUPERGA.png",
+            "link": "shopify://collections/superga"
+          }
+        },
+        "621bf0bd-1197-4192-b669-f175a1842135": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Marcas-NIPSKIN.png",
+            "link": "shopify://collections/nipskin"
+          }
+        },
+        "165971025761093583-0": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Marcas-NAVA.png",
+            "link": "https://shopialo.com/collections/nava-wear"
+          }
+        },
+        "721d3c6c-c6ad-4ada-8511-4f60443b967a": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Marcas-LOCCITANE.png",
+            "link": "shopify://collections/l-occitane"
+          }
+        },
+        "165971025761093583-3": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Marcas-PIERRE-CARDIN.png",
+            "link": "shopify://collections/pierre-cardin-1"
+          }
+        }
+      },
+      "block_order": [
+        "165971025761093583-1",
+        "c512f8b7-d946-47cc-89c2-b135d3adb4d6",
+        "899d7be1-e783-421a-bd56-a68ca89c474f",
+        "80049a68-ee9a-487d-860a-dfb1ab87022f",
+        "165971025761093583-2",
+        "cba04ac1-0b64-4e64-af6d-515cf0e551d1",
+        "logo_6VX6WN",
+        "c05c4313-d3a2-4d38-9835-1414e7e08088",
+        "394470e6-c5e7-425c-a195-8671d9b46e1c",
+        "621bf0bd-1197-4192-b669-f175a1842135",
+        "165971025761093583-0",
+        "721d3c6c-c6ad-4ada-8511-4f60443b967a",
+        "165971025761093583-3"
+      ],
+      "custom_css": [],
+      "settings": {
+        "title": "Nuestras marcas"
+      }
+    }
+  },
+  "order": [
+    "dynamic_slideshow",
+    "dynamic_highlights_banner",
+    "dynamic_logo_list_iHfqwF",
+    "pxs_image_with_text_overlay_gBWHV8",
+    "dynamic_promo_mosaic_dafxxw",
+    "dynamic_shoppable_image_kpyWqh",
+    "dynamic_featured_collection_nUHprE",
+    "dynamic_featured_collection_7jhE7U",
+    "dynamic_logo_list_peKnAT",
+    "dynamic_promo_mosaic_fCp9PJ",
+    "dynamic_promo_mosaic_hkxLkp",
+    "dynamic_promo_mosaic_bLrYrJ",
+    "pxs_image_with_text_overlay_QhHN79",
+    "dynamic_slideshow_FG7mqB",
+    "dynamic_featured_collection_m9p6Rh",
+    "dynamic_collection_list_rBdfLa",
+    "dynamic_logo_list_mrAy9g",
+    "92c4fb92-671f-4616-bd67-1b615a8595ce",
+    "pxs_image_with_text_overlay_ML78Cp",
+    "1659710257a8ab5e82"
+  ]
+}

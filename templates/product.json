@@ -1,0 +1,114 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "static-product",
+      "blocks": {
+        "vendor": {
+          "type": "vendor",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "rating": {
+          "type": "rating",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "vana_pay_shopialo_product_widget_riMY7Q": {
+          "type": "shopify://apps/vana-pay-shopialo/blocks/product-widget/019a702a-ddc7-78c8-952d-0837d8158843",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "form": {
+          "type": "form",
+          "settings": {
+            "enable_local_pickup": false,
+            "show_gift_card_recipient_form": false
+          }
+        },
+        "complementary_products_zLgcqw": {
+          "type": "complementary_products",
+          "settings": {
+            "heading": "Normalmente lo combinan con",
+            "product_recommendation_limit": 5,
+            "products_per_slide": 2
+          }
+        },
+        "key_details_iNKC4F": {
+          "type": "key_details",
+          "settings": {
+            "icon": "icon-delivery-door",
+            "title": "TIEMPO DE ENTREGA",
+            "text": "<p>- Envíos rápidos en el perímetro de la capital 1 a 2 días hábiles </p><p>- Envío a todo el país de 3 a 5 días hábiles </p>",
+            "text_color": "#1d1d1d",
+            "icon_color": "#1d1d1d",
+            "background_color": "#f5f3ed"
+          }
+        },
+        "collapsible_tab_zfhMMK": {
+          "type": "collapsible-tab",
+          "settings": {
+            "collapsible_tab_heading": "Descripción del producto",
+            "collapsible_tab_text": "{{ product.description }}"
+          }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "rating",
+        "price",
+        "vana_pay_shopialo_product_widget_riMY7Q",
+        "description",
+        "form",
+        "complementary_products_zLgcqw",
+        "key_details_iNKC4F",
+        "collapsible_tab_zfhMMK"
+      ],
+      "settings": {
+        "gallery_aspect_ratio": "natural",
+        "gallery_image_crop": false,
+        "gallery_thumbnail_position": "left",
+        "gallery_video_autoplay": true,
+        "gallery_video_looping": true,
+        "gallery_hover_zoom": "disabled",
+        "gallery_click_to_zoom": "disabled"
+      }
+    },
+    "recommendations": {
+      "type": "static-product-recommendations",
+      "settings": {
+        "show_product_recommendations": true,
+        "product_recommendations_heading": "Te puede gustar"
+      }
+    },
+    "recently-viewed": {
+      "type": "static-recently-viewed",
+      "settings": {
+        "enable_recently_viewed_products": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "recommendations",
+    "recently-viewed"
+  ]
+}

@@ -1,0 +1,292 @@
+<!-- Shopify Product Gallery using Swiper + product.media -->
+<!-- Include Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<style>
+  .product-gallery {
+    display: flex;
+    gap: 1rem;
+  }
+
+  /* Desktop: vertical thumbnails */
+  .swiper-thumbs {
+    width: 80px;
+    flex: 0 0 auto;
+    max-height: 550px;
+    margin: 0 !important;
+  }
+
+  .swiper-thumbs .swiper-slide {
+        width: 80px;
+        height: 80px;
+    }
+
+  .swiper-thumbs .swiper-slide {
+    opacity: 0.9;
+    cursor: pointer;
+  }
+  .swiper-thumbs .swiper-slide-thumb-active {
+    opacity: 1;
+    border: 1.5px solid #818181;
+    border-radius: 2px;
+  }
+
+  .swiper-main {
+    width: 100%;
+    max-width: 100%;
+    max-height: 600px;
+  }
+   .swiper-thumbs .swiper-slide img {
+    width: 100%;
+    height: 100%;
+    border-radius: 1px;
+ }
+.swiper-main .swiper-slide img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 0px;
+    max-height: 600px;
+    object-fit: contain;
+    {% comment %} background: #efefef; {% endcomment %}
+}
+ .swiper-thumbs .swiper-wrapper {
+    width: 100%;    
+}
+.product-gallery {
+    position: sticky;
+    top: 85px;
+}
+.product--outer {   
+    align-items: start;
+}
+.akta-nav-btn:after{
+    display: none;
+}
+.akta-nav-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #818181;
+    border-radius: 3px;
+    background: #fff;
+    transition: 0.3s;
+}
+.akta-nav-btn svg {
+    width: 25px;
+    height: 25px;
+    color: #000;
+    transition: 0.3s;
+}
+.akta-nav-btn:hover{
+    background: #000;
+}
+.akta-nav-btn:hover svg{
+     color: #fff;
+}
+
+.swiper-thumbs .swiper-wrapper,
+.swiper-main .swiper-wrapper{
+    height: 100% !important;
+    max-height: 600px !important;
+}
+
+
+  /* Mobile: thumbnails below */
+  @media (max-width: 768px) {
+    .product-gallery {
+      flex-direction: column;
+    }
+    .swiper-thumbs {
+      width: 100%;
+      height: auto;
+      order: 2;
+    }
+    .swiper-thumbs .swiper-wrapper {
+      flex-direction: row;
+    }
+    .swiper-thumbs .swiper-slide {
+        width: 80px;
+        height: 80px;
+    }
+  }
+  /* Mobile: thumbnails below */
+  @media (max-width: 719px) {
+    .product-gallery {
+        position: static;
+    }
+    .swiper-main {
+        width: 100%;
+        max-width: 100%;
+        max-height: 600px;
+    }
+  }
+  @media (max-width: 600px) {
+    .akta-nav-btn {
+      width: 30px;
+      height: 30px;      
+    }
+    .akta-nav-btn svg {
+      width: 20px;
+      height: 20px;      
+    }
+  }
+
+{% comment %} quickview popup  {% endcomment %}
+  .modal-content .product-gallery {
+    display: flex !important;
+    flex-direction: column-reverse;
+    width: 100%;
+    position: static;
+    margin-bottom: 20px;
+  }
+  .modal-content article.product--outer {
+    flex-direction: column;
+  }
+  .modal-content .swiper-main .swiper-wrapper {    
+    max-height: 400px !important;
+  }
+  .modal-content .swiper-main .swiper-slide img {    
+    max-height: 400px;
+  }
+
+  .modal-content .swiper-main .swiper-slide img {    
+    border-radius: 10px;    
+  }
+  .modal-content .swiper-thumbs {
+    width: 100%;    
+    max-height: 82px;   
+    display: none; 
+  }
+  @media (max-width: 768px) {
+    .product-gallery {
+        flex-direction: column !important;
+    }
+    .modal--quickshop-slim {      
+      padding-top: 100px;
+    }
+    
+
+  }
+{% comment %} quickview popup end {% endcomment %}
+
+
+
+
+</style>
+
+<div class="product-gallery">
+  <!-- Thumbnails -->
+  <div class="swiper swiper-thumbs" id="thumbSwiper">
+    <div class="swiper-wrapper">
+      {% for media in product.media %}
+        <div class="swiper-slide">
+          {{ media | image_url: width: 200 | image_tag: class: 'thumb-img' }}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Main Images -->
+  <div class="swiper swiper-main" id="mainSwiper">
+    <div class="swiper-wrapper">
+      {% for media in product.media %}
+        <div class="swiper-slide">
+          {% case media.media_type %}
+            {% when 'image' %}
+              {{ media | image_url: width: 2000 | image_tag }}
+            {% when 'video' %}
+              {{ media | video_tag: controls: true }}
+            
+          {% endcase %}
+        </div>
+      {% endfor %}
+    </div>
+    <div class="swiper-button-prev akta-nav-btn">
+      <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="200px" width="200px" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"></path></svg>
+    </div>
+    <div class="swiper-button-next akta-nav-btn">
+      <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="200px" width="200px" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path></svg>
+    </div>
+  </div>
+</div>
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+ {% comment %} <script>
+  const thumbSwiper = new Swiper('#thumbSwiper', {
+    direction: window.innerWidth > 768 ? 'vertical' : 'horizontal',
+    slidesPerView: 'auto',
+    spaceBetween: 10,
+    watchSlidesProgress: true,
+    watchSlidesVisibility: true,
+  });
+
+  const mainSwiper = new Swiper('#mainSwiper', {
+    spaceBetween: 10,
+    
+    navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+    },
+   
+
+    thumbs: {
+      swiper: thumbSwiper
+    }
+  });
+
+  // Handle direction change on resize
+  window.addEventListener('resize', () => {
+    const newDirection = window.innerWidth > 768 ? 'vertical' : 'horizontal';
+    if (thumbSwiper.params.direction !== newDirection) {
+      thumbSwiper.changeDirection(newDirection);
+    }
+  });
+</script>  {% endcomment %}
+<script>
+window.initGlobalSwiper = function (scope = document, options = {}) {
+    const isQuickView = options.quickview === true;
+
+    const thumbEl = scope.querySelector('#thumbSwiper');
+    const mainEl = scope.querySelector('#mainSwiper');
+    if (!thumbEl || !mainEl) return;
+
+    // Prevent re-initializing
+    if (thumbEl.dataset.inited === "true") return;
+    thumbEl.dataset.inited = "true";
+
+    // MOBILE STYLE ALWAYS IN POPUP
+    const direction = isQuickView
+        ? "horizontal"                         // ← always mobile layout in Quick View
+        : (window.innerWidth > 768 ? "vertical" : "horizontal");
+
+    const thumbSwiper = new Swiper(thumbEl, {
+        direction: direction,
+        slidesPerView: 'auto',
+        spaceBetween: 10,
+        watchSlidesProgress: true
+    });
+
+    const mainSwiper = new Swiper(mainEl, {
+        spaceBetween: 10,
+        navigation: {
+            nextEl: scope.querySelector('.swiper-button-next'),
+            prevEl: scope.querySelector('.swiper-button-prev')
+        },
+        thumbs: { swiper: thumbSwiper }
+    });
+
+    // Product page only: update direction on resize
+    if (!isQuickView) {
+        window.addEventListener('resize', () => {
+            const newDir = window.innerWidth > 768 ? "vertical" : "horizontal";
+            if (thumbSwiper.params.direction !== newDir) {
+                thumbSwiper.changeDirection(newDir);
+            }
+        });
+    }
+};
+document.addEventListener("DOMContentLoaded", () => {
+    initGlobalSwiper(document, { quickview: false });
+});
+</script>
