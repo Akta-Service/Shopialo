@@ -609,56 +609,57 @@
     <script>(function(n, v) {/* eslint-disable-next-line max-len */if (window.Shopify && window.Shopify.theme && navigator && navigator.sendBeacon && window.Shopify.designMode) {if (sessionStorage.getItem('oots_beacon')) return;navigator.sendBeacon('https://app.outofthesandbox.com/beacon', new URLSearchParams({shop_domain: window.Shopify.shop.toLowerCase(),shop_id: window.BOOMR.shopId,shop_email: '{{ shop.email }}',theme_name: n.toLowerCase(),theme_version: v.toLowerCase(),theme_store_id: window.Shopify.theme.theme_store_id,theme_id: window.Shopify.theme.id,theme_role: window.Shopify.theme.role,}));sessionStorage.setItem('oots_beacon', '');}}('empire','11.1.1'))</script>
 
      {% comment %} remove img attr from desktop for {% endcomment %}
-    {% comment %} <script>
-      (function () {
-        const DESKTOP = '(min-width: 769px)';
+      <script>
+        (function () {
+          const DESKTOP = '(min-width: 769px)';
 
-        function toggleQuickBuyOnImages() {
-          document.querySelectorAll('.productitem--image img').forEach(img => {
+          function toggleQuickBuyOnImages() {
+            // Select all product images (main + hover) inside the mobile card
+            document.querySelectorAll('.productitem--image.mobile img').forEach(img => {
 
-            // store original attrs once
-            if (!img.dataset.qbInit) {
-              if (img.hasAttribute('data-quick-buy')) {
-                img.dataset.qbType = 'quick-buy';
+              // store pre-data attributes once
+              if (!img.dataset.qbInit) {
+                img.dataset.qbType = img.hasAttribute('pre-data-quick-buy') ? 'quick-buy' :
+                                    img.hasAttribute('pre-data-quickshop-slim') ? 'quickshop-slim' : '';
+                img.dataset.qbVariant = img.getAttribute('pre-data-variant-id') || '';
+                img.dataset.qbInit = 'true';
               }
-              if (img.hasAttribute('data-quickshop-slim')) {
-                img.dataset.qbType = 'quickshop-slim';
-              }
-              if (img.hasAttribute('data-variant-id')) {
-                img.dataset.qbVariant = img.getAttribute('data-variant-id');
-              }
-              img.dataset.qbInit = 'true';
-            }
 
-            if (window.matchMedia(DESKTOP).matches) {
-              // DESKTOP → remove
-              img.removeAttribute('data-quick-buy');
-              img.removeAttribute('data-quickshop-slim');
-              img.removeAttribute('data-variant-id');
-            } else {
-              // MOBILE → restore
-              if (img.dataset.qbType === 'quick-buy') {
-                img.setAttribute('data-quick-buy', '');
+              if (window.matchMedia(DESKTOP).matches) {
+                // DESKTOP → remove data attributes
+                img.removeAttribute('data-quick-buy');
+                img.removeAttribute('data-quickshop-slim');
+                img.removeAttribute('data-variant-id');
+              } else {
+                // MOBILE → add or update data attributes
+                if (img.dataset.qbType === 'quick-buy') {
+                  img.setAttribute('data-quickshop-slim', '');
+                } else if (img.dataset.qbType === 'quickshop-slim') {
+                  img.setAttribute('data-quickshop-slim', '');
+                }
+
+                if (img.dataset.qbVariant) {
+                  img.setAttribute('data-variant-id', img.dataset.qbVariant);
+                }
               }
-              if (img.dataset.qbType === 'quickshop-slim') {
-                img.setAttribute('data-quickshop-slim', '');
-              }
-              if (img.dataset.qbVariant) {
-                img.setAttribute('data-variant-id', img.dataset.qbVariant);
-              }
-            }
+            });
+          }
+
+          // initial run
+          toggleQuickBuyOnImages();
+
+          // run on resize with debounce
+          let resizeTimeout;
+          window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(toggleQuickBuyOnImages, 100);
           });
-        }
 
-        // initial
-        toggleQuickBuyOnImages();
+          // run on Shopify dynamic section load
+          document.addEventListener('shopify:section:load', toggleQuickBuyOnImages);
+        })();
+      </script>
 
-        // resize
-        window.addEventListener('resize', toggleQuickBuyOnImages);
-
-        // for themes that dynamically re-render cards
-        document.addEventListener('shopify:section:load', toggleQuickBuyOnImages);
-      })();
-    </script> {% endcomment %}
+    
   </body>  
 </html>
