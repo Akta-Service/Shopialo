@@ -1,23 +1,23 @@
 {% assign badges = product.metafields.custom.descriptive_product_badges.value %}
-            {% if badges != '' %}
-              <div class="badges">
-                {% for badge in badges %}
-                  {% assign b = badge | strip %}
-                  {% assign color = '' %}
+{% if badges != '' %}
+    <div class="badges">
+    {% for badge in badges %}
+        {% assign b = badge | strip %}
+        {% assign color = '' %}
 
-                  {% case b %}
-                    {% when 'New' %}{% assign color = '#3CB371' %}
-                    {% when 'New Arrivals' %}{% assign color = '#3CB371' %}
-                    {% when 'Best Seller' %}{% assign color = '#FF8C00' %}
-                    {% when 'Eco Friendly' %}{% assign color = '#55B66B' %}
-                    {% when 'Limited Stock' %}{% assign color = '#E63946' %}
-                    {% when 'Hot Deal' %}{% assign color = '#D7263D' %}
-                    {% else %}{% assign color = '#333' %}
-                  {% endcase %}
+        {% case b %}
+        {% when 'New' %}{% assign color = '#3CB371' %}
+        {% when 'New Arrivals' %}{% assign color = '#3CB371' %}
+        {% when 'Best Seller' %}{% assign color = '#FF8C00' %}
+        {% when 'Eco Friendly' %}{% assign color = '#55B66B' %}
+        {% when 'Limited Stock' %}{% assign color = '#E63946' %}
+        {% when 'Hot Deal' %}{% assign color = '#D7263D' %}
+        {% else %}{% assign color = '#333' %}
+        {% endcase %}
 
-                  <span class="product-badge" style="background-color: {{ color }};">
-                    {{ b }}
-                  </span>
-                {% endfor %}
-              </div>
-            {% endif %}
+        <span class="product-badge" style="background-color: {{ color }};">
+        {{ b }}
+        </span>
+    {% endfor %}
+    </div>
+{% endif %}
