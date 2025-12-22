@@ -41,7 +41,7 @@
           "settings": {
             "enable_local_pickup": false,
             "show_gift_card_recipient_form": false,
-            "show_size_guide_check": true,
+            "show_size_guide_check": false,
             "size_guide_option_names": "Tamaño",
             "go_to_pdp_text": "Ver producto"
           }
