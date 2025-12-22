@@ -4,6 +4,22 @@
   @param selected_variant
 {% endcomment %}
 
+
+{% assign show_size_guide = false %}
+{% assign size_options = section.settings.size_guide_option_names | split: ',' %}
+
+{% for size_option in size_options %}
+  {% assign clean_option = size_option | strip | downcase %}
+  {% if option.name | downcase == clean_option %}
+    {% assign show_size_guide = true %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+
+
+
+
 <fieldset
   class="
     {% unless show_swatches %}
@@ -14,7 +30,7 @@
     {% endunless %}
   "
 >
-  <legend class="options-selection__option-header {% if option.name == 'Tamaño' or option.name == 'tamaño' %}Size-Guide-wrapp {% endif %}">
+  <legend class="options-selection__option-header {% if show_size_guide %} Size-Guide-wrapp{% endif %}">
     <span
       class="options-selection__option-name"
       data-variant-option-name="{{ 'product.variants.chosen_option_html' | t: option: option.name, value: option.selected_value | escape }}"
@@ -28,16 +44,12 @@
     </span>
 
   
-{% assign size_options = section.settings.size_guide_option_names | split: ',' %}
+{% if show_size_guide %}
+  <span id="size-guide" class="size-guide">
+    Size guide
+  </span>
+{% endif %}
 
-{% for size_option in size_options %}
-  {% assign clean_option = size_option | strip | downcase %}
-  {% if option.name | downcase == clean_option %}
-    <span id="size-guide" class="size-guide">
-      Size guide
-    </span>
-  {% endif %}
-{% endfor %}
 
 
   </legend>
