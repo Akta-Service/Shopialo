@@ -365,8 +365,9 @@
                       {% unless onboarding %}
                         {% render 'product-form',
                           product: product,
+                          block: block,
                           go_to_pdp_text: go_to_pdp_text,
-                          enable_local_pickup: enable_local_pickup
+                          enable_local_pickup: enable_local_pickup                          
                           
                         %}
                       {% endunless %}
