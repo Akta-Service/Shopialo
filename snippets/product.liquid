@@ -356,12 +356,16 @@
                         else
                           assign enable_local_pickup = block.settings.enable_local_pickup
                         endif
+
+                        assign go_to_pdp_text = block.settings.go_to_pdp_text
+
+
                       %}
 
                       {% unless onboarding %}
                         {% render 'product-form',
                           product: product,
-                          block: block,
+                          go_to_pdp_text: go_to_pdp_text,
                           enable_local_pickup: enable_local_pickup
                           
                         %}
