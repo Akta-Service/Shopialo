@@ -175,6 +175,17 @@
 </style>
 
 <div class="product-gallery">
+
+  <!-- quickshop image -->
+  <div class="quick-view-product-image">
+    <img src="{{  product.images[0] | image_url }}" width="" height="" alt="{{ product.title }}">
+  </div>
+
+
+
+
+
+
   <!-- Thumbnails -->
   <div class="swiper swiper-thumbs" id="thumbSwiper">
     <div class="swiper-wrapper">
@@ -209,84 +220,3 @@
     </div>
   </div>
 </div>
-
-<!-- Swiper JS -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
- {% comment %} <script>
-  const thumbSwiper = new Swiper('#thumbSwiper', {
-    direction: window.innerWidth > 768 ? 'vertical' : 'horizontal',
-    slidesPerView: 'auto',
-    spaceBetween: 10,
-    watchSlidesProgress: true,
-    watchSlidesVisibility: true,
-  });
-
-  const mainSwiper = new Swiper('#mainSwiper', {
-    spaceBetween: 10,
-    
-    navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev'
-    },
-   
-
-    thumbs: {
-      swiper: thumbSwiper
-    }
-  });
-
-  // Handle direction change on resize
-  window.addEventListener('resize', () => {
-    const newDirection = window.innerWidth > 768 ? 'vertical' : 'horizontal';
-    if (thumbSwiper.params.direction !== newDirection) {
-      thumbSwiper.changeDirection(newDirection);
-    }
-  });
-</script>  {% endcomment %}
-<script>
-window.initGlobalSwiper = function (scope = document, options = {}) {
-    const isQuickView = options.quickview === true;
-
-    const thumbEl = scope.querySelector('#thumbSwiper');
-    const mainEl = scope.querySelector('#mainSwiper');
-    if (!thumbEl || !mainEl) return;
-
-    // Prevent re-initializing
-    if (thumbEl.dataset.inited === "true") return;
-    thumbEl.dataset.inited = "true";
-
-    // MOBILE STYLE ALWAYS IN POPUP
-    const direction = isQuickView
-        ? "horizontal"                         // ← always mobile layout in Quick View
-        : (window.innerWidth > 768 ? "vertical" : "horizontal");
-
-    const thumbSwiper = new Swiper(thumbEl, {
-        direction: direction,
-        slidesPerView: 'auto',
-        spaceBetween: 10,
-        watchSlidesProgress: true
-    });
-
-    const mainSwiper = new Swiper(mainEl, {
-        spaceBetween: 10,
-        navigation: {
-            nextEl: scope.querySelector('.swiper-button-next'),
-            prevEl: scope.querySelector('.swiper-button-prev')
-        },
-        thumbs: { swiper: thumbSwiper }
-    });
-
-    // Product page only: update direction on resize
-    if (!isQuickView) {
-        window.addEventListener('resize', () => {
-            const newDir = window.innerWidth > 768 ? "vertical" : "horizontal";
-            if (thumbSwiper.params.direction !== newDir) {
-                thumbSwiper.changeDirection(newDir);
-            }
-        });
-    }
-};
-document.addEventListener("DOMContentLoaded", () => {
-    initGlobalSwiper(document, { quickview: false });
-});
-</script>

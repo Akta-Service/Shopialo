@@ -608,6 +608,8 @@
     </script>
     <script>(function(n, v) {/* eslint-disable-next-line max-len */if (window.Shopify && window.Shopify.theme && navigator && navigator.sendBeacon && window.Shopify.designMode) {if (sessionStorage.getItem('oots_beacon')) return;navigator.sendBeacon('https://app.outofthesandbox.com/beacon', new URLSearchParams({shop_domain: window.Shopify.shop.toLowerCase(),shop_id: window.BOOMR.shopId,shop_email: '{{ shop.email }}',theme_name: n.toLowerCase(),theme_version: v.toLowerCase(),theme_store_id: window.Shopify.theme.theme_store_id,theme_id: window.Shopify.theme.id,theme_role: window.Shopify.theme.role,}));sessionStorage.setItem('oots_beacon', '');}}('empire','11.1.1'))</script>
 
+
+      <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
      {% comment %} remove img attr from desktop for {% endcomment %}
       <script>
         (function () {
@@ -658,6 +660,84 @@
           // run on Shopify dynamic section load
           document.addEventListener('shopify:section:load', toggleQuickBuyOnImages);
         })();
+      </script>
+
+      
+      <script>
+
+            // Global function to initialize Swipers in a given container
+            window.initProductSwiper = function(container = document) {
+              if (typeof Swiper === "undefined") return;
+
+              const thumbSwiperEl = container.querySelector('#thumbSwiper');
+              const mainSwiperEl = container.querySelector('#mainSwiper');
+
+              if (!thumbSwiperEl || !mainSwiperEl) return;
+
+              // Prevent duplicate initialization
+              if (!thumbSwiperEl.swiper && !mainSwiperEl.swiper) {
+                const thumbSwiper = new Swiper(thumbSwiperEl, {
+                  direction: window.innerWidth > 768 ? 'vertical' : 'horizontal',
+                  slidesPerView: 'auto',
+                  spaceBetween: 10,
+                  watchSlidesProgress: true,
+                  watchSlidesVisibility: true,
+                });
+
+                const mainSwiper = new Swiper(mainSwiperEl, {
+                  spaceBetween: 10,
+                  navigation: {
+                    nextEl: container.querySelector('.swiper-button-next'),
+                    prevEl: container.querySelector('.swiper-button-prev')
+                  },
+                  thumbs: {
+                    swiper: thumbSwiper
+                  }
+                });
+
+                // Responsive direction on resize
+                window.addEventListener('resize', () => {
+                  const newDirection = window.innerWidth > 768 ? 'vertical' : 'horizontal';
+                  if (thumbSwiper.params.direction !== newDirection) {
+                    thumbSwiper.changeDirection(newDirection);
+                  }
+                });
+              } else {
+                // Already initialized, just update
+                thumbSwiperEl.swiper.update();
+                mainSwiperEl.swiper.update();
+              }
+            };
+
+            // === Initialize on product page immediately ===
+            document.addEventListener('DOMContentLoaded', () => {
+              window.initProductSwiper(document);
+            });
+
+            // === MutationObserver for QuickView content injection ===
+            const observer = new MutationObserver((mutationsList) => {
+              for (const mutation of mutationsList) {
+                mutation.addedNodes.forEach(node => {
+                  if (node.nodeType === 1) { // Element node
+                    // Check if modal-inner or product slider is added
+                    const modalInner = node.matches('.modal-inner') ? node : node.querySelector('.modal-inner');
+                    if (modalInner) {
+                      window.initProductSwiper(modalInner);
+                    }
+
+                    // Optional: also handle dynamically injected sliders outside modal
+                    const sliderContainer = node.querySelector('#mainSwiper');
+                    if (sliderContainer) {
+                      window.initProductSwiper(node);
+                    }
+                  }
+                });
+              }
+            });
+
+            // Observe the body for added nodes (lightweight)
+            observer.observe(document.body, { childList: true, subtree: true });
+
       </script>
 
     
