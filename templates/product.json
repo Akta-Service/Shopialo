@@ -41,6 +41,7 @@
           "settings": {
             "enable_local_pickup": false,
             "show_gift_card_recipient_form": false,
+            "size_guide_option_names": "Tamaño",
             "go_to_pdp_text": "Go to Product ggg"
           }
         },
