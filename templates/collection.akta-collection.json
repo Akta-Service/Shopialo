@@ -106,9 +106,9 @@
         "filter-1"
       ],
       "settings": {
-        "show_breadcrumbs": true,
-        "show_collection_image": false,
-        "show_title": true,
+        "show_breadcrumbs": false,
+        "show_collection_image": true,
+        "show_title": false,
         "products_per_page_range": 48,
         "products_per_row": "4",
         "sort_by": true,
