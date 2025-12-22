@@ -341,7 +341,7 @@
 
       <div class="productitem__image-container">
         <a
-          class="productitem--image-link"
+          class="productitem--image-link productitem--image-desktop"
           href="{{ product.url | within: collection }}"
           tabindex="-1"
           data-product-page-link
@@ -435,8 +435,100 @@
             <span class="visually-hidden">
               {{- product_title -}}
             </span>
-          </figure>
+          </figure>  
         </a>
+         {% comment %} mobile image for collection {% endcomment %}
+          <figure
+            class="productitem--image mobile"
+            data-product-item-image
+            {% if settings.product_grid_image_style == 'natural' and initial_image %}
+              style="--product-grid-item-image-aspect-ratio: {{ initial_image.aspect_ratio }};"
+            {% endif %}
+          >
+            {% if initial_image %}
+              {% if product_grid_show_second_image and product.media.size > 1 %}
+                {% assign second_image = product.media[1].preview_image.src %}
+                {%
+                  render 'mobile-rimg',
+                  img: second_image,
+                  size: '512x',
+                  lazy: true,
+                  class: 'productitem--image-alternate',
+                  canvas: true,
+                  product: product,
+                  has_variants: has_variants
+                %}
+              {% endif %}
+              {%
+                render 'mobile-rimg',
+                img: initial_image
+                size: '512x',
+                lazy: performance_lazyload,
+                class: 'productitem--image-primary',
+                canvas: performance_lazyload,
+                product: product,
+                has_variants: has_variants
+              %}
+            {% else %}
+              {% if product %}
+                {{ 'image' | placeholder_svg_tag: 'placeholder--image' }}
+              {% else %}
+                {%- capture index -%}
+                  {%- cycle '1', '2', '3', '4', '5', '6' -%}
+                {%- endcapture -%}
+                {{ 'product-' | append: index | placeholder_svg_tag: 'placeholder--image' }}
+              {% endif %}
+            {% endif %}
+
+            {%
+              render 'product-badge',
+              product: product,
+              class_root: 'productitem',
+              product_available: product_available,
+              price: price,
+              price_varies: price_varies,
+              compare_at_price: compare_at_price,
+              compare_at_price_varies: compare_at_price_varies,
+              on_sale: on_sale,
+              show_saved: consistent_saved,
+              include_range: true,
+            %}
+
+           {% assign badges = product.metafields.custom.descriptive_product_badges.value %}
+
+
+            {% if badges != '' %}
+              
+
+              <div class="badges">
+                {% for badge in badges %}
+                  {% assign b = badge | strip %}
+                  {% assign color = '' %}
+
+                  {% case b %}
+                    {% when 'New' %}{% assign color = '#3CB371' %}
+                    {% when 'New Arrivals' %}{% assign color = '#3CB371' %}
+                    {% when 'Best Seller' %}{% assign color = '#FF8C00' %}
+                    {% when 'Eco Friendly' %}{% assign color = '#55B66B' %}
+                    {% when 'Limited Stock' %}{% assign color = '#E63946' %}
+                    {% when 'Hot Deal' %}{% assign color = '#D7263D' %}
+                    {% else %}{% assign color = '#333' %}
+                  {% endcase %}
+
+                  <span class="product-badge" style="background-color: {{ color }};">
+                    {{ b }}
+                  </span>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+
+
+            <span class="visually-hidden">
+              {{- product_title -}}
+            </span>
+          </figure>
+
       </div>
        
 
