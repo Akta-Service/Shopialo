@@ -138,18 +138,10 @@
         </figure> {% endcomment %}
         {% if collection.metafields.custom.featured_image != blank %}
 
-        <div class="collection-featured-image">
-          <img src="{{ collection.metafields.custom.featured_image | image_url }}" height="" width="" alt="{{ collection.title }} Featured image">
-        </div>
-
-        {% elsif  collection.image != blank %}
-           <div class="collection-featured-image">
-            <img src="{{ collection.image | image_url }}" height="" width="" alt="{{ collection.title }} Featured image">
+          <div class="collection-featured-image">
+            <img src="{{ collection.metafields.custom.featured_image | image_url }}" height="" width="" alt="{{ collection.title }} Featured image">
           </div>
-        {% else %}
-        {% comment %} <h1 class="collection--title">
-          {{ collection.title }}
-        </h1> {% endcomment %}
+       
         {% endif %}
 
       {% endif %}
