@@ -28,11 +28,16 @@
     </span>
 
   
-  {% if option.name == 'Tamaño' or option.name == 'tamaño' or option.name == 'Size' or option.name == 'size' %}
+{% assign size_options = section.settings.size_guide_option_names | split: ',' %}
+
+{% for size_option in size_options %}
+  {% assign clean_option = size_option | strip | downcase %}
+  {% if option.name | downcase == clean_option %}
     <span id="size-guide" class="size-guide">
-      Guía de tallas
+      Size guide
     </span>
-  {% endif %} 
+  {% endif %}
+{% endfor %}
 
 
   </legend>
