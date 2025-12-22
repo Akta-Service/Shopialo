@@ -361,7 +361,8 @@
                       {% unless onboarding %}
                         {% render 'product-form',
                           product: product,
-                          enable_local_pickup: enable_local_pickup
+                          enable_local_pickup: enable_local_pickup,
+                          block: block
                         %}
                       {% endunless %}
                     </div>
