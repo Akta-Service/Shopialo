@@ -3,7 +3,7 @@
 
   @param selected_variant
 {% endcomment %}
-
+{% if block.settings.show_size_guide_check %}
 
 {% assign show_size_guide = false %}
 {% assign size_options = block.settings.size_guide_option_names | split: ',' %}
@@ -17,7 +17,7 @@
   {% endif %}
 {% endfor %}
 
-
+{% endif %}
 
 
 
