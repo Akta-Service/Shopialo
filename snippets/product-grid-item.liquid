@@ -475,7 +475,13 @@
               {{- product_title -}}
             </span>
           </figure>
-test badge
+
+
+{% assign badges = product.metafields.custom.descriptive_product_badges.value %}
+{{ badges | json }}
+
+
+
           {% render 'descriptive-badge' %} 
 
       </div>
