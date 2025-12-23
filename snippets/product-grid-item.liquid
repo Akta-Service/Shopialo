@@ -402,9 +402,36 @@
               include_range: true,
             %}
 
-           {% comment %} {% render 'descriptive-badge' %} {% endcomment %}
+            {% comment %} descriptive badge {% endcomment %}
 
+            {% assign badges = product.metafields.custom.descriptive_product_badges.value %}
 
+            {% if badges != blank %}
+              <div class="akta-badges">
+                {% for badge in badges %}
+
+                  {% assign parts = badge | split: '|' %}
+                  {% assign label = parts[0] | strip %}
+                  {% assign bg_color = '#333' %}
+                  {% assign text_color = '#fff' %}
+
+                  {% for part in parts %}
+                    {% assign p = part | strip %}
+                    {% if p contains 'bg:' %}
+                      {% assign bg_color = p | remove: 'bg:' %}
+                    {% elsif p contains 'text:' %}
+                      {% assign text_color = p | remove: 'text:' %}
+                    {% endif %}
+                  {% endfor %}
+
+                  <span class="akta-product-badge"
+                    style="background-color: {{ bg_color }}; color: {{ text_color }};">
+                    {{ label }}
+                  </span>
+
+                {% endfor %}
+              </div>
+            {% endif %}
 
             <span class="visually-hidden">
               {{- product_title -}}
@@ -468,8 +495,34 @@
               include_range: true,
             %}
 
-          {% comment %} {% render 'descriptive-badge' %} {% endcomment %}
+            {% assign badges = product.metafields.custom.descriptive_product_badges.value %}
 
+            {% if badges != blank %}
+              <div class="akta-badges">
+                {% for badge in badges %}
+
+                  {% assign parts = badge | split: '|' %}
+                  {% assign label = parts[0] | strip %}
+                  {% assign bg_color = '#333' %}
+                  {% assign text_color = '#fff' %}
+
+                  {% for part in parts %}
+                    {% assign p = part | strip %}
+                    {% if p contains 'bg:' %}
+                      {% assign bg_color = p | remove: 'bg:' %}
+                    {% elsif p contains 'text:' %}
+                      {% assign text_color = p | remove: 'text:' %}
+                    {% endif %}
+                  {% endfor %}
+
+                  <span class="akta-product-badge"
+                    style="background-color: {{ bg_color }}; color: {{ text_color }};">
+                    {{ label }}
+                  </span>
+
+                {% endfor %}
+              </div>
+            {% endif %}
 
             <span class="visually-hidden">
               {{- product_title -}}
