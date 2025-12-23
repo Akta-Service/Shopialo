@@ -402,7 +402,7 @@
               include_range: true,
             %}
 
-           {% render 'descriptive-badge' %} 
+           {% comment %} {% render 'descriptive-badge' %} {% endcomment %}
 
 
 
@@ -468,21 +468,13 @@
               include_range: true,
             %}
 
-          
+          {% comment %} {% render 'descriptive-badge' %} {% endcomment %}
 
 
             <span class="visually-hidden">
               {{- product_title -}}
             </span>
           </figure>
-
-
-{% assign badges = product.metafields.custom.descriptive_product_badges.value %}
-{{ badges | json }}
-
-
-
-          {% render 'descriptive-badge' %} 
 
       </div>
        
