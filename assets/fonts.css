@@ -1,12 +1,13 @@
 /* Local Google Fonts - Lato & Source Sans Pro */
-/* This eliminates external font requests and improves load time */
+/* FULLY LOCAL: All font files now hosted in Shopify assets folder */
+/* This completely eliminates external font requests to Google CDN */
 
 @font-face {
   font-family: 'Lato';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('https://fonts.gstatic.com/s/lato/v25/S6uyw4BMUTPHjx4wWw.ttf') format('truetype');
+  src: url('S6uyw4BMUTPHjx4wWw.ttf') format('truetype');
 }
 
 @font-face {
@@ -14,7 +15,7 @@
   font-style: normal;
   font-weight: 300;
   font-display: swap;
-  src: url('https://fonts.gstatic.com/s/sourcesanspro/v23/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwlxdr.ttf') format('truetype');
+  src: url('6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwlxdr.ttf') format('truetype');
 }
 
 @font-face {
@@ -22,7 +23,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('https://fonts.gstatic.com/s/sourcesanspro/v23/6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7g.ttf') format('truetype');
+  src: url('6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7g.ttf') format('truetype');
 }
 
 @font-face {
@@ -30,5 +31,5 @@
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('https://fonts.gstatic.com/s/sourcesanspro/v23/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwlxdr.ttf') format('truetype');
+  src: url('6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwlxdr.ttf') format('truetype');
 }
