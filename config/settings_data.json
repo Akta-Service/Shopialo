@@ -296,26 +296,6 @@
         "disabled": true,
         "settings": {}
       },
-      "6174324309569838175": {
-        "type": "shopify://apps/smile-io/blocks/smile-shopify-app/2fae4e25-1841-4ea2-bc02-bd548478c4f6",
-        "disabled": false,
-        "settings": {}
-      },
-      "13768625480086291342": {
-        "type": "shopify://apps/forms/blocks/forms/8744a304-fcb1-4347-b211-bb6b4759a76a",
-        "disabled": false,
-        "settings": {}
-      },
-      "144831480468751239": {
-        "type": "shopify://apps/essential-upsell/blocks/app-embed/50627fd9-24fd-4250-8614-accc12826d80",
-        "disabled": false,
-        "settings": {}
-      },
-      "14826766009936288847": {
-        "type": "shopify://apps/discounty/blocks/sdk/d65eb522-0d94-499f-9831-d4b3301f5340",
-        "disabled": false,
-        "settings": {}
-      },
       "8208493610395315515": {
         "type": "shopify://apps/dondy-whatsapp-chat-marketing/blocks/app-block/7f5a70cb-e171-4cc7-ac02-e2220203abd6",
         "disabled": true,
@@ -338,6 +318,26 @@
       },
       "5543792312086422108": {
         "type": "shopify://apps/marketing-support-on-whatsapp/blocks/widget/d56220c8-e303-4e59-a70a-59dd55affd80",
+        "disabled": true,
+        "settings": {}
+      },
+      "13768625480086291342": {
+        "type": "shopify://apps/forms/blocks/forms/8744a304-fcb1-4347-b211-bb6b4759a76a",
+        "disabled": true,
+        "settings": {}
+      },
+      "144831480468751239": {
+        "type": "shopify://apps/essential-upsell/blocks/app-embed/50627fd9-24fd-4250-8614-accc12826d80",
+        "disabled": true,
+        "settings": {}
+      },
+      "14826766009936288847": {
+        "type": "shopify://apps/discounty/blocks/sdk/d65eb522-0d94-499f-9831-d4b3301f5340",
+        "disabled": true,
+        "settings": {}
+      },
+      "6174324309569838175": {
+        "type": "shopify://apps/smile-io/blocks/smile-shopify-app/2fae4e25-1841-4ea2-bc02-bd548478c4f6",
         "disabled": true,
         "settings": {}
       }
