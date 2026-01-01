@@ -215,34 +215,15 @@
       })();
     </script>
     
-    {%- comment -%}ENHANCED Critical CSS - Prevent FOUC and layout shift{%- endcomment -%}
+    {%- comment -%}MINIMAL Critical CSS - Only essential styles to prevent FOUC{%- endcomment -%}
     <style>
-      /* Critical above-the-fold styles */
-      *{box-sizing:border-box;margin:0;padding:0}
-      body{font-family:'Source Sans Pro',sans-serif;font-display:swap;line-height:1.5;color:#000;background:#fff}
+      /* Minimal critical styles - DO NOT hide any elements */
+      body{font-family:'Source Sans Pro',sans-serif;font-display:swap;margin:0}
+      .site-header{background:#2e2e2e;color:#fff}
+      .site-logo-image{max-width:200px;height:auto}
       
-      /* Header critical styles */
-      .site-header{position:relative;background:#fff;z-index:100}
-      .site-header-main{display:flex;align-items:center;justify-content:space-between;padding:10px 20px}
-      .site-logo-image{max-width:200px;height:auto;display:block}
-      
-      /* Mobile header */
-      @media(max-width:768px){
-        .site-header-main{padding:8px 15px}
-        .site-logo-image{max-width:150px}
-      }
-      
-      /* Slideshow critical */
-      .slideshow{position:relative;overflow:hidden;min-height:300px}
-      .slideshow-slide__image{width:100%;height:auto;display:block;object-fit:cover}
-      
-      /* Performance optimizations */
-      img{font-display:swap;content-visibility:auto}
-      .productitem--image img{content-visibility:auto}
-      img[loading="lazy"]{content-visibility:auto}
-      
-      /* Prevent layout shift */
-      .lazy-section:not(.section-loaded){min-height:300px;background:#f5f5f5}
+      /* Performance only - no layout changes */
+      img{font-display:swap}
     </style>
     
     {%- comment -%}Defer non-critical CSS{%- endcomment -%}
@@ -1036,18 +1017,18 @@
               }
             });
             
-            // Optimize logo for mobile - EXTREME (displayed 438x108, optimize to exact size)
+            // Optimize logo for mobile - Match Lighthouse recommendation (displayed 350x86)
             var logoImage = document.querySelector('.site-logo-image');
             if (logoImage && isMobile) {
               var logoSrc = logoImage.getAttribute('src');
               if (logoSrc && (logoSrc.includes('2024x500') || logoSrc.includes('2400x593'))) {
-                // Optimize mobile logo: 2024x500 → 438x108 (exact display size for 44 KiB savings)
-                var optimizedLogoSrc = logoSrc.replace(/2024x500/g, '438x108').replace(/2400x593/g, '438x108').replace(/x200/g, 'x108');
+                // Optimize mobile logo: 2024x500 → 350x86 (exact display size for 44.8 KiB savings)
+                var optimizedLogoSrc = logoSrc.replace(/2024x500/g, '350x86').replace(/2400x593/g, '350x86').replace(/x200/g, 'x86');
                 logoImage.setAttribute('src', optimizedLogoSrc);
                 
                 var logoSrcset = logoImage.getAttribute('srcset');
                 if (logoSrcset) {
-                  var optimizedLogoSrcset = logoSrcset.replace(/2024x500/g, '438x108').replace(/2400x593/g, '438x108').replace(/@2x/g, '');
+                  var optimizedLogoSrcset = logoSrcset.replace(/2024x500/g, '350x86').replace(/2400x593/g, '350x86').replace(/@2x/g, '');
                   logoImage.setAttribute('srcset', optimizedLogoSrcset);
                 }
               }
