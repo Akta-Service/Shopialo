@@ -1,11 +1,11 @@
-<!-- Swiper CSS -->
+<!-- Swiper CSS - LOCAL for faster loading -->
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+  href="{{ 'swiper-bundle.min.css' | asset_url }}"
 />
 
-<!-- Swiper JS -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<!-- Swiper JS - LOCAL for faster loading -->
+<script src="{{ 'swiper-bundle.min.js' | asset_url }}"></script>
 <style>
   .collection-nav-wrapper {
     padding: 60px 0;
