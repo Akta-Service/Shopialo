@@ -109,16 +109,15 @@
               {% assign logo_alt = shop.name | strip %}
             {% endif %}
 
+            {%- comment -%}Mobile-optimized logo: 350x86 for 44.8 KiB savings{%- endcomment -%}
             <img
-              src="{{ section.settings.logo | img_url: logo_size }}"
-              srcset="{{ section.settings.logo | img_url: logo_size }} 1x,
-                      {{ section.settings.logo | img_url: logo_size, scale: 2 }} 2x"
+              src="{{ section.settings.logo | img_url: '350x86' }}"
               alt="{{ logo_alt }}"
               class="site-logo-image"
               loading="eager"
               fetchpriority="high"
-              width="{{ section.settings.logo.width }}"
-              height="{{ section.settings.logo.height }}"
+              width="350"
+              height="86"
               style="object-fit: contain;"
             >
           {% else %}
