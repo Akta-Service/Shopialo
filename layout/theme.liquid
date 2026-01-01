@@ -910,17 +910,17 @@
               firstSlideImage.setAttribute('fetchpriority', 'high');
               firstSlideImage.removeAttribute('loading');
               
-              // Mobile-specific optimization - ULTRA aggressive for 520 KiB savings
+              // Mobile-specific optimization - EXTREME for 1,144 KiB savings
               if (isMobile && firstSlideImage.classList.contains('slideshow-slide__image--mobile')) {
                 var currentSrc = firstSlideImage.getAttribute('src');
                 if (currentSrc && (currentSrc.includes('1280x1600') || currentSrc.includes('1280x1599'))) {
-                  // Optimize mobile banner: 1280x1600 → 500x625 (ULTRA aggressive)
-                  var optimizedSrc = currentSrc.replace(/1280x16\d{2}/g, '500x625');
+                  // Optimize mobile banner: 1280x1600 → 400x500 (EXTREME aggressive for 150 KiB savings)
+                  var optimizedSrc = currentSrc.replace(/1280x16\d{2}/g, '400x500');
                   firstSlideImage.setAttribute('src', optimizedSrc);
                   
                   var srcset = firstSlideImage.getAttribute('srcset');
                   if (srcset) {
-                    var optimizedSrcset = srcset.replace(/1280x16\d{2}/g, '500x625');
+                    var optimizedSrcset = srcset.replace(/1280x16\d{2}/g, '400x500');
                     firstSlideImage.setAttribute('srcset', optimizedSrcset);
                   }
                 }
@@ -950,12 +950,12 @@
               if (isMobile && img.classList.contains('slideshow-slide__image--mobile')) {
                 var src = img.getAttribute('src');
                 if (src && (src.includes('1280x1600') || src.includes('1280x1599'))) {
-                  img.setAttribute('src', src.replace(/1280x16\d{2}/g, '500x625'));
+                  img.setAttribute('src', src.replace(/1280x16\d{2}/g, '400x500'));
                 }
                 
                 var srcset = img.getAttribute('srcset');
                 if (srcset) {
-                  img.setAttribute('srcset', srcset.replace(/1280x16\d{2}/g, '500x625'));
+                  img.setAttribute('srcset', srcset.replace(/1280x16\d{2}/g, '400x500'));
                 }
               } else if (!isMobile) {
                 var src = img.getAttribute('src');
@@ -970,18 +970,18 @@
               }
             });
             
-            // Optimize logo for mobile - ULTRA aggressive (displayed 350x86)
+            // Optimize logo for mobile - EXTREME (displayed 438x108, optimize to exact size)
             var logoImage = document.querySelector('.site-logo-image');
             if (logoImage && isMobile) {
               var logoSrc = logoImage.getAttribute('src');
               if (logoSrc && (logoSrc.includes('2024x500') || logoSrc.includes('2400x593'))) {
-                // Optimize mobile logo: 2024x500 → 350x86 (exact display size)
-                var optimizedLogoSrc = logoSrc.replace(/2024x500/g, '350x86').replace(/2400x593/g, '350x86').replace(/x200/g, 'x86');
+                // Optimize mobile logo: 2024x500 → 438x108 (exact display size for 44 KiB savings)
+                var optimizedLogoSrc = logoSrc.replace(/2024x500/g, '438x108').replace(/2400x593/g, '438x108').replace(/x200/g, 'x108');
                 logoImage.setAttribute('src', optimizedLogoSrc);
                 
                 var logoSrcset = logoImage.getAttribute('srcset');
                 if (logoSrcset) {
-                  var optimizedLogoSrcset = logoSrcset.replace(/2024x500/g, '350x86').replace(/2400x593/g, '350x86').replace(/@2x/g, '');
+                  var optimizedLogoSrcset = logoSrcset.replace(/2024x500/g, '438x108').replace(/2400x593/g, '438x108').replace(/@2x/g, '');
                   logoImage.setAttribute('srcset', optimizedLogoSrcset);
                 }
               }
@@ -998,9 +998,9 @@
                 var width = parseInt(dimensions[0]);
                 var height = parseInt(dimensions[1]);
                 
-                // Mobile: reduce to 25% for GIFs (390x390 → 98x98) - ULTRA aggressive
-                // Desktop: reduce to 60% for GIFs
-                var reductionFactor = isMobile ? 0.25 : 0.6;
+                // Mobile: reduce to 10% for GIFs (1080x1080 → 108x108) - EXTREME for 1,144 KiB savings
+                // Desktop: reduce to 50% for GIFs
+                var reductionFactor = isMobile ? 0.10 : 0.5;
                 var newWidth = Math.floor(width * reductionFactor);
                 var newHeight = Math.floor(height * reductionFactor);
                 
@@ -1036,6 +1036,84 @@
           window.addEventListener('resize', function() {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(optimizeImages, 200);
+          });
+        })();
+        
+        // LAZY LOAD BELOW-FOLD SECTIONS - Load only visible sections
+        (function() {
+          'use strict';
+          var isMobile = window.innerWidth <= 768;
+          
+          // Only apply aggressive lazy loading on mobile
+          if (!isMobile) return;
+          
+          // Sections to lazy load (below the fold)
+          var lazyLoadSelectors = [
+            '.promo-mosaic--container',
+            '.home-section',
+            '.featured-collection',
+            '.collection-list',
+            '.productgrid--outer'
+          ];
+          
+          // Create Intersection Observer
+          var observerOptions = {
+            root: null,
+            rootMargin: '200px', // Start loading 200px before entering viewport
+            threshold: 0.01
+          };
+          
+          var sectionObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                var section = entry.target;
+                
+                // Load images in this section
+                var images = section.querySelectorAll('img[data-src]');
+                images.forEach(function(img) {
+                  if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                  }
+                  if (img.dataset.srcset) {
+                    img.srcset = img.dataset.srcset;
+                    img.removeAttribute('data-srcset');
+                  }
+                });
+                
+                // Load background images
+                var bgElements = section.querySelectorAll('[data-bg]');
+                bgElements.forEach(function(el) {
+                  if (el.dataset.bg) {
+                    el.style.backgroundImage = 'url(' + el.dataset.bg + ')';
+                    el.removeAttribute('data-bg');
+                  }
+                });
+                
+                // Mark section as loaded
+                section.classList.add('section-loaded');
+                
+                // Stop observing this section
+                sectionObserver.unobserve(section);
+              }
+            });
+          }, observerOptions);
+          
+          // Observe all lazy-load sections
+          document.addEventListener('DOMContentLoaded', function() {
+            lazyLoadSelectors.forEach(function(selector) {
+              var sections = document.querySelectorAll(selector);
+              sections.forEach(function(section, index) {
+                // Skip first section (above the fold)
+                if (index === 0 && selector === '.home-section') return;
+                
+                // Add lazy loading class
+                section.classList.add('lazy-section');
+                
+                // Observe section
+                sectionObserver.observe(section);
+              });
+            });
           });
         })();
         
