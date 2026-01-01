@@ -4,20 +4,20 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="IE=edge">
 
+    {%- comment -%}PRIORITY: Preload logo FIRST before anything else in header{%- endcomment -%}
+    {% assign logo_preload_size = 'x200' %}
+    <link rel="preload" as="image" href="{{ 'Logo_Shopialo.com.png' | file_img_url: logo_preload_size }}" fetchpriority="highest" imagesrcset="{{ 'Logo_Shopialo.com.png' | file_img_url: logo_preload_size }} 1x, {{ 'Logo_Shopialo.com.png' | file_img_url: logo_preload_size, scale: 2 }} 2x">
+    
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
     <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdn.autoketing.org">
     <link rel="dns-prefetch" href="https://a.plerdy.com">
     <link rel="dns-prefetch" href="https://scripts.clarity.ms">
     
-    {%- comment -%}Defer Google Fonts to prevent render blocking{%- endcomment -%}
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Lato&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    {%- comment -%}Local fonts - eliminates external requests for faster loading{%- endcomment -%}
+    <link rel="preload" as="style" href="{{ 'fonts.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato&display=swap">
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600&display=swap">
+      <link rel="stylesheet" href="{{ 'fonts.css' | asset_url }}">
     </noscript>
 
     <title>
