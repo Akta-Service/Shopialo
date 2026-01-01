@@ -8,11 +8,15 @@
     {% assign logo_preload_size = 'x200' %}
     <link rel="preload" as="image" href="{{ 'Logo_Shopialo.com.png' | file_img_url: logo_preload_size }}" fetchpriority="highest" imagesrcset="{{ 'Logo_Shopialo.com.png' | file_img_url: logo_preload_size }} 1x, {{ 'Logo_Shopialo.com.png' | file_img_url: logo_preload_size, scale: 2 }} 2x">
     
+    {%- comment -%}Aggressive resource hints for third-party domains{%- endcomment -%}
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
     <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.hextom.com">
+    <link rel="dns-prefetch" href="https://scripts.clarity.ms">
+    <link rel="dns-prefetch" href="https://edge.personalizer.io">
+    <link rel="dns-prefetch" href="https://script.crazyegg.com">
     <link rel="dns-prefetch" href="https://cdn.autoketing.org">
     <link rel="dns-prefetch" href="https://a.plerdy.com">
-    <link rel="dns-prefetch" href="https://scripts.clarity.ms">
     
     {%- comment -%}Local fonts - eliminates external requests for faster loading{%- endcomment -%}
     <link rel="preload" as="style" href="{{ 'fonts.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
@@ -87,18 +91,20 @@
       <link rel="preload" as="image" href="https://cdn.shopify.com/s/files/1/0270/4202/1474/files/Banner_web_movil_600x750.webp" media="(max-width: 768px)" fetchpriority="high">
     {% endif %}
 
-    {%- comment -%}CRITICAL: Intercept content_for_header to block render-blocking CSS{%- endcomment -%}
+    {%- comment -%}CRITICAL: Intercept content_for_header to block render-blocking CSS and preview-bar{%- endcomment -%}
     <script>
-      // ULTRA-AGGRESSIVE: Block ALL render-blocking CSS before content_for_header loads
+      // ULTRA-AGGRESSIVE: Block ALL render-blocking CSS and Shopify preview-bar before content_for_header loads
       (function() {
         'use strict';
         var isMobile = window.innerWidth <= 768;
         var blockedCSS = [];
+        var isPreviewMode = window.location.hostname.includes('shopifypreview.com') || 
+                           window.Shopify && window.Shopify.designMode;
         
-        // Override document.write to intercept Shopify CSS injections
+        // Override document.write to intercept Shopify CSS and preview-bar injections
         var originalWrite = document.write;
         document.write = function(content) {
-          // Block Shopify CSS and Google Fonts
+          // Block Shopify CSS
           if (content.includes('cdn.shopify.com') && 
               (content.includes('/assets/app.css') || 
                content.includes('/assets/sdk.css') || 
@@ -107,13 +113,18 @@
             blockedCSS.push(content);
             return; // Don't write it
           }
+          // Block Google Fonts
           if (content.includes('fonts.googleapis.com')) {
             return; // Block Google Fonts completely (we have local)
+          }
+          // Block Shopify preview-bar on live site (367 KiB savings)
+          if (!isPreviewMode && content.includes('preview-bar')) {
+            return; // Block preview-bar scripts on live site
           }
           originalWrite.call(document, content);
         };
         
-        // Also intercept createElement for link tags
+        // Also intercept createElement for link and script tags
         var originalCreateElement = document.createElement;
         document.createElement = function(tagName) {
           var element = originalCreateElement.call(document, tagName);
@@ -144,6 +155,17 @@
               }
               if (name === 'href' && value.includes('fonts.googleapis.com')) {
                 return; // Block Google Fonts
+              }
+              originalSetAttribute.call(element, name, value);
+            };
+          }
+          
+          if (tagName.toLowerCase() === 'script') {
+            var originalSetAttribute = element.setAttribute;
+            element.setAttribute = function(name, value) {
+              // Block preview-bar scripts on live site
+              if (!isPreviewMode && name === 'src' && value.includes('preview-bar')) {
+                return; // Don't set src for preview-bar
               }
               originalSetAttribute.call(element, name, value);
             };
@@ -1257,6 +1279,19 @@
 
       </script>
 
+    {%- comment -%}Register Service Worker for aggressive third-party caching{%- endcomment -%}
+    <script>
+      // Register service worker for aggressive caching (7-day cache lifetime)
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('{{ "sw.js" | asset_url }}').then(function(registration) {
+            console.log('ServiceWorker registered:', registration.scope);
+          }).catch(function(err) {
+            console.log('ServiceWorker registration failed:', err);
+          });
+        });
+      }
+    </script>
     
     {% comment %} Aggressive third-party script deferral for performance {% endcomment %}
     <script>
