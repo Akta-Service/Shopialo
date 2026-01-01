@@ -282,7 +282,7 @@
       {% capture product_compare_image %}
         {% if initial_image %}
           {%
-            render 'rimg',
+            render 'mobile-rimg',
             img: initial_image
             size: '250x',
             lazy: true,
@@ -341,7 +341,7 @@
 
       <div class="productitem__image-container">
         <a
-          class="productitem--image-link productitem--image-desktop"
+          class="productitem--image-link"
           href="{{ product.url | within: collection }}"
           tabindex="-1"
           data-product-page-link
@@ -357,9 +357,9 @@
               {% if product_grid_show_second_image and product.media.size > 1 %}
                 {% assign second_image = product.media[1].preview_image.src %}
                 {%
-                  render 'rimg',
+                  render 'mobile-rimg',
                   img: second_image,
-                  size: '512x',
+                  size: '400x',
                   lazy: true,
                   class: 'productitem--image-alternate',
                   canvas: true,
@@ -368,9 +368,9 @@
                 %}
               {% endif %}
               {%
-                render 'rimg',
+                render 'mobile-rimg',
                 img: initial_image
-                size: '512x',
+                size: '400x',
                 lazy: performance_lazyload,
                 class: 'productitem--image-primary',
                 canvas: performance_lazyload,
@@ -438,97 +438,6 @@
             </span>
           </figure>  
         </a>
-         {% comment %} mobile image for collection {% endcomment %}
-          <figure
-            class="productitem--image mobile"
-            data-product-item-image
-            {% if settings.product_grid_image_style == 'natural' and initial_image %}
-              style="--product-grid-item-image-aspect-ratio: {{ initial_image.aspect_ratio }};"
-            {% endif %}
-          >
-            {% if initial_image %}
-              {% if product_grid_show_second_image and product.media.size > 1 %}
-                {% assign second_image = product.media[1].preview_image.src %}
-                {%
-                  render 'mobile-rimg',
-                  img: second_image,
-                  size: '512x',
-                  lazy: true,
-                  class: 'productitem--image-alternate',
-                  canvas: true,
-                  product: product,
-                  has_variants: has_variants
-                %}
-              {% endif %}
-              {%
-                render 'mobile-rimg',
-                img: initial_image
-                size: '512x',
-                lazy: performance_lazyload,
-                class: 'productitem--image-primary',
-                canvas: performance_lazyload,
-                product: product,
-                has_variants: has_variants
-              %}
-            {% else %}
-              {% if product %}
-                {{ 'image' | placeholder_svg_tag: 'placeholder--image' }}
-              {% else %}
-                {%- capture index -%}
-                  {%- cycle '1', '2', '3', '4', '5', '6' -%}
-                {%- endcapture -%}
-                {{ 'product-' | append: index | placeholder_svg_tag: 'placeholder--image' }}
-              {% endif %}
-            {% endif %}
-
-            {%
-              render 'product-badge',
-              product: product,
-              class_root: 'productitem',
-              product_available: product_available,
-              price: price,
-              price_varies: price_varies,
-              compare_at_price: compare_at_price,
-              compare_at_price_varies: compare_at_price_varies,
-              on_sale: on_sale,
-              show_saved: consistent_saved,
-              include_range: true,
-            %}
-
-            {% assign badges = product.metafields.custom.descriptive_product_badges.value %}
-
-            {% if badges != blank %}
-              <div class="akta-badges">
-                {% for badge in badges %}
-
-                  {% assign parts = badge | split: '|' %}
-                  {% assign label = parts[0] | strip %}
-                  {% assign bg_color = '#333' %}
-                  {% assign text_color = '#fff' %}
-
-                  {% for part in parts %}
-                    {% assign p = part | strip %}
-                    {% if p contains 'bg:' %}
-                      {% assign bg_color = p | remove: 'bg:' %}
-                    {% elsif p contains 'text:' %}
-                      {% assign text_color = p | remove: 'text:' %}
-                    {% endif %}
-                  {% endfor %}
-
-                  <span class="akta-product-badge"
-                    style="background-color: {{ bg_color }}; color: {{ text_color }};">
-                    {{ label }}
-                  </span>
-
-                {% endfor %}
-              </div>
-            {% endif %}
-
-            <span class="visually-hidden">
-              {{- product_title -}}
-            </span>
-          </figure>
-
       </div>
        
 
