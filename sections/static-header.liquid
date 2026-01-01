@@ -109,14 +109,18 @@
               {% assign logo_alt = shop.name | strip %}
             {% endif %}
 
-            {%
-              render 'rimg',
-              img: section.settings.logo,
-              class: 'site-logo-image',
-              alt: logo_alt,
-              size: logo_size,
-              focal_point: section.settings.logo.presentation.focal_point,
-            %}
+            <img
+              src="{{ section.settings.logo | img_url: logo_size }}"
+              srcset="{{ section.settings.logo | img_url: logo_size }} 1x,
+                      {{ section.settings.logo | img_url: logo_size, scale: 2 }} 2x"
+              alt="{{ logo_alt }}"
+              class="site-logo-image"
+              loading="eager"
+              fetchpriority="high"
+              width="{{ section.settings.logo.width }}"
+              height="{{ section.settings.logo.height }}"
+              style="object-fit: contain;"
+            >
           {% else %}
             {% if template == 'index' %}
               <h1 class="site-logo-text">
