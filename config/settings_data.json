@@ -286,11 +286,6 @@
         "disabled": false,
         "settings": {}
       },
-      "5543792312086422108": {
-        "type": "shopify://apps/marketing-support-on-whatsapp/blocks/widget/d56220c8-e303-4e59-a70a-59dd55affd80",
-        "disabled": false,
-        "settings": {}
-      },
       "3753596010683798665": {
         "type": "shopify://apps/pushdaddy-whatsapp-live-chat/blocks/app-embed/e3f2054d-bf7b-4e63-8db3-00712592382c",
         "disabled": true,
@@ -321,11 +316,6 @@
         "disabled": false,
         "settings": {}
       },
-      "18432163116217570346": {
-        "type": "shopify://apps/booster-whatsapp-chat-button/blocks/app-block-tbwb/fa472af1-b98f-4be9-b000-42fd10bb6a63",
-        "disabled": false,
-        "settings": {}
-      },
       "8208493610395315515": {
         "type": "shopify://apps/dondy-whatsapp-chat-marketing/blocks/app-block/7f5a70cb-e171-4cc7-ac02-e2220203abd6",
         "disabled": true,
@@ -339,6 +329,16 @@
       "2200952712151285029": {
         "type": "shopify://apps/microsoft-clarity/blocks/brandAgents_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
         "disabled": false,
+        "settings": {}
+      },
+      "18432163116217570346": {
+        "type": "shopify://apps/booster-whatsapp-chat-button/blocks/app-block-tbwb/fa472af1-b98f-4be9-b000-42fd10bb6a63",
+        "disabled": true,
+        "settings": {}
+      },
+      "5543792312086422108": {
+        "type": "shopify://apps/marketing-support-on-whatsapp/blocks/widget/d56220c8-e303-4e59-a70a-59dd55affd80",
+        "disabled": true,
         "settings": {}
       }
     }
