@@ -91,11 +91,13 @@
 
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     
-    {%- comment -%}Aggressively defer Shopify CDN CSS to prevent render blocking{%- endcomment -%}
+    {%- comment -%}ULTRA-AGGRESSIVE: Defer Shopify CDN CSS immediately to eliminate render blocking{%- endcomment -%}
     <script>
-      // Defer Shopify app CSS files - Enhanced version
+      // Defer Shopify app CSS files - ULTRA version with immediate execution
       (function() {
+        'use strict';
         var processedLinks = new Set();
+        var isMobile = window.innerWidth <= 768;
         
         // Function to defer a CSS link
         function deferCSSLink(link) {
@@ -112,39 +114,43 @@
             
             processedLinks.add(href);
             
-            // Remove the blocking link
+            // IMMEDIATE removal - don't wait
             var parent = link.parentNode;
             if (parent) {
               parent.removeChild(link);
             }
             
-            // Create new non-blocking link
-            var newLink = document.createElement('link');
-            newLink.rel = 'preload';
-            newLink.as = 'style';
-            newLink.href = href;
-            newLink.onload = function() {
-              this.onload = null;
-              this.rel = 'stylesheet';
-            };
+            // Mobile: delay CSS loading by 2 seconds to prioritize critical content
+            var loadDelay = isMobile ? 2000 : 0;
             
-            // Add noscript fallback
-            var noscript = document.createElement('noscript');
-            var fallbackLink = document.createElement('link');
-            fallbackLink.rel = 'stylesheet';
-            fallbackLink.href = href;
-            noscript.appendChild(fallbackLink);
-            
-            document.head.appendChild(newLink);
-            document.head.appendChild(noscript);
+            setTimeout(function() {
+              // Create new non-blocking link with media trick
+              var newLink = document.createElement('link');
+              newLink.rel = 'stylesheet';
+              newLink.href = href;
+              newLink.media = 'print'; // Load as print to avoid blocking
+              newLink.onload = function() {
+                this.media = 'all'; // Switch to all after load
+              };
+              
+              // Add noscript fallback
+              var noscript = document.createElement('noscript');
+              var fallbackLink = document.createElement('link');
+              fallbackLink.rel = 'stylesheet';
+              fallbackLink.href = href;
+              noscript.appendChild(fallbackLink);
+              
+              document.head.appendChild(newLink);
+              document.head.appendChild(noscript);
+            }, loadDelay);
           }
         }
         
-        // Process existing links immediately
+        // Process existing links IMMEDIATELY - run before DOMContentLoaded
         var existingLinks = document.querySelectorAll('link[rel="stylesheet"]');
         existingLinks.forEach(deferCSSLink);
         
-        // Watch for new links being added
+        // Watch for new links being added with high priority
         var observer = new MutationObserver(function(mutations) {
           mutations.forEach(function(mutation) {
             mutation.addedNodes.forEach(function(node) {
@@ -157,8 +163,8 @@
         
         observer.observe(document.head, { childList: true, subtree: true });
         
-        // Keep observing for 5 seconds to catch all Shopify injections (increased for better coverage)
-        setTimeout(function() { observer.disconnect(); }, 5000);
+        // Keep observing for 8 seconds to catch ALL Shopify injections
+        setTimeout(function() { observer.disconnect(); }, 8000);
       })();
     </script>
     
