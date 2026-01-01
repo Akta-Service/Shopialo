@@ -87,70 +87,119 @@
       <link rel="preload" as="image" href="https://cdn.shopify.com/s/files/1/0270/4202/1474/files/Banner_web_movil_600x750.webp" media="(max-width: 768px)" fetchpriority="high">
     {% endif %}
 
+    {%- comment -%}CRITICAL: Intercept content_for_header to block render-blocking CSS{%- endcomment -%}
+    <script>
+      // ULTRA-AGGRESSIVE: Block ALL render-blocking CSS before content_for_header loads
+      (function() {
+        'use strict';
+        var isMobile = window.innerWidth <= 768;
+        var blockedCSS = [];
+        
+        // Override document.write to intercept Shopify CSS injections
+        var originalWrite = document.write;
+        document.write = function(content) {
+          // Block Shopify CSS and Google Fonts
+          if (content.includes('cdn.shopify.com') && 
+              (content.includes('/assets/app.css') || 
+               content.includes('/assets/sdk.css') || 
+               content.includes('/assets/superlemon.css') ||
+               content.includes('/assets/vendor.css'))) {
+            blockedCSS.push(content);
+            return; // Don't write it
+          }
+          if (content.includes('fonts.googleapis.com')) {
+            return; // Block Google Fonts completely (we have local)
+          }
+          originalWrite.call(document, content);
+        };
+        
+        // Also intercept createElement for link tags
+        var originalCreateElement = document.createElement;
+        document.createElement = function(tagName) {
+          var element = originalCreateElement.call(document, tagName);
+          
+          if (tagName.toLowerCase() === 'link') {
+            var originalSetAttribute = element.setAttribute;
+            element.setAttribute = function(name, value) {
+              if (name === 'href' && 
+                  (value.includes('cdn.shopify.com') && 
+                   (value.includes('/assets/app.css') || 
+                    value.includes('/assets/sdk.css') || 
+                    value.includes('/assets/superlemon.css') ||
+                    value.includes('/assets/vendor.css')))) {
+                // Defer this CSS
+                var href = value;
+                var loadDelay = isMobile ? 3000 : 500;
+                
+                setTimeout(function() {
+                  var link = originalCreateElement.call(document, 'link');
+                  link.rel = 'preload';
+                  link.as = 'style';
+                  link.href = href;
+                  link.onload = function() { this.rel = 'stylesheet'; };
+                  document.head.appendChild(link);
+                }, loadDelay);
+                
+                return; // Don't set href
+              }
+              if (name === 'href' && value.includes('fonts.googleapis.com')) {
+                return; // Block Google Fonts
+              }
+              originalSetAttribute.call(element, name, value);
+            };
+          }
+          
+          return element;
+        };
+      })();
+    </script>
+
     {{ content_for_header }}
 
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     
-    {%- comment -%}ULTRA-AGGRESSIVE: Defer Shopify CDN CSS immediately to eliminate render blocking{%- endcomment -%}
+    {%- comment -%}SECONDARY: Catch any CSS that slipped through{%- endcomment -%}
     <script>
-      // Defer Shopify app CSS files - ULTRA version with immediate execution
       (function() {
         'use strict';
-        var processedLinks = new Set();
         var isMobile = window.innerWidth <= 768;
+        var processedLinks = new Set();
         
-        // Function to defer a CSS link
         function deferCSSLink(link) {
           var href = link.href || '';
-          
-          // Skip if already processed
           if (processedLinks.has(href)) return;
           
-          if (href.includes('cdn.shopify.com') && 
+          if ((href.includes('cdn.shopify.com') && 
               (href.includes('/assets/app.css') || 
                href.includes('/assets/sdk.css') || 
                href.includes('/assets/superlemon.css') ||
-               href.includes('/assets/vendor.css'))) {
+               href.includes('/assets/vendor.css'))) ||
+              href.includes('fonts.googleapis.com')) {
             
             processedLinks.add(href);
             
-            // IMMEDIATE removal - don't wait
-            var parent = link.parentNode;
-            if (parent) {
-              parent.removeChild(link);
+            if (link.parentNode) {
+              link.parentNode.removeChild(link);
             }
             
-            // Mobile: delay CSS loading by 2 seconds to prioritize critical content
-            var loadDelay = isMobile ? 2000 : 0;
+            // Don't reload Google Fonts - we have local
+            if (href.includes('fonts.googleapis.com')) return;
             
+            var loadDelay = isMobile ? 3000 : 500;
             setTimeout(function() {
-              // Create new non-blocking link with media trick
               var newLink = document.createElement('link');
-              newLink.rel = 'stylesheet';
+              newLink.rel = 'preload';
+              newLink.as = 'style';
               newLink.href = href;
-              newLink.media = 'print'; // Load as print to avoid blocking
-              newLink.onload = function() {
-                this.media = 'all'; // Switch to all after load
-              };
-              
-              // Add noscript fallback
-              var noscript = document.createElement('noscript');
-              var fallbackLink = document.createElement('link');
-              fallbackLink.rel = 'stylesheet';
-              fallbackLink.href = href;
-              noscript.appendChild(fallbackLink);
-              
+              newLink.onload = function() { this.rel = 'stylesheet'; };
               document.head.appendChild(newLink);
-              document.head.appendChild(noscript);
             }, loadDelay);
           }
         }
         
-        // Process existing links IMMEDIATELY - run before DOMContentLoaded
         var existingLinks = document.querySelectorAll('link[rel="stylesheet"]');
         existingLinks.forEach(deferCSSLink);
         
-        // Watch for new links being added with high priority
         var observer = new MutationObserver(function(mutations) {
           mutations.forEach(function(mutation) {
             mutation.addedNodes.forEach(function(node) {
@@ -162,21 +211,38 @@
         });
         
         observer.observe(document.head, { childList: true, subtree: true });
-        
-        // Keep observing for 8 seconds to catch ALL Shopify injections
-        setTimeout(function() { observer.disconnect(); }, 8000);
+        setTimeout(function() { observer.disconnect(); }, 10000);
       })();
     </script>
     
-    {%- comment -%}Critical CSS for above-the-fold content - MINIMAL to avoid breaking layout{%- endcomment -%}
+    {%- comment -%}ENHANCED Critical CSS - Prevent FOUC and layout shift{%- endcomment -%}
     <style>
-      /* Critical CSS - Performance optimizations only */
-      img{font-display:swap}
-      body{font-display:swap}
+      /* Critical above-the-fold styles */
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:'Source Sans Pro',sans-serif;font-display:swap;line-height:1.5;color:#000;background:#fff}
+      
+      /* Header critical styles */
+      .site-header{position:relative;background:#fff;z-index:100}
+      .site-header-main{display:flex;align-items:center;justify-content:space-between;padding:10px 20px}
+      .site-logo-image{max-width:200px;height:auto;display:block}
+      
+      /* Mobile header */
+      @media(max-width:768px){
+        .site-header-main{padding:8px 15px}
+        .site-logo-image{max-width:150px}
+      }
+      
+      /* Slideshow critical */
+      .slideshow{position:relative;overflow:hidden;min-height:300px}
+      .slideshow-slide__image{width:100%;height:auto;display:block;object-fit:cover}
+      
+      /* Performance optimizations */
+      img{font-display:swap;content-visibility:auto}
       .productitem--image img{content-visibility:auto}
       img[loading="lazy"]{content-visibility:auto}
-      .site-header{will-change:auto}
-      .productitem--image-primary,.productitem--image-alternate{will-change:auto;transform:translateZ(0);backface-visibility:hidden}
+      
+      /* Prevent layout shift */
+      .lazy-section:not(.section-loaded){min-height:300px;background:#f5f5f5}
     </style>
     
     {%- comment -%}Defer non-critical CSS{%- endcomment -%}
