@@ -333,8 +333,8 @@
         disabled
       {% endif %}
     
-    width=""
-    height="" 
+    width="{{ rimg_w }}"
+    height="{{ rimg_h }}" 
       >
     </noscript>
   {% endif %}
@@ -348,6 +348,7 @@
     alt="{{ rimg_alt }}"
 
     {% if lazy %}
+      loading="lazy"
       data-rimg="lazy"
       data-rimg-scale="{{ rimg_scale }}"
       data-rimg-template="{{ rimg_url_template }}"
@@ -362,8 +363,8 @@
 
     {% if class != blank %}class="{{ class }}"{% endif %}
     {% if style != blank %}style="{{ style }}"{% endif %}
-    {% if attr != blank %}{{ attr }}{% endif %}    
-     {% unless has_variants %}
+    {% if attr != blank %}{{ attr }}{% endif %}
+    {% unless has_variants %}
         pre-data-quick-buy
       {% else %}
         pre-data-quickshop-slim
@@ -371,9 +372,9 @@
       pre-data-variant-id="{{ product.selected_or_first_available_variant.id }}"
       {% if product == false or product_available == false %}
         disabled
-      {% endif %}    
-      width=""
-      height="" 
+      {% endif %}
+      width="{{ rimg_w }}"
+      height="{{ rimg_h }}" 
   >
 {% endif %}
 
