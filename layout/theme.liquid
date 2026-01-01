@@ -101,7 +101,7 @@
         var isPreviewMode = window.location.hostname.includes('shopifypreview.com') || 
                            window.Shopify && window.Shopify.designMode;
         
-        // Override document.write to intercept Shopify CSS and preview-bar injections
+        // Override document.write to intercept Shopify CSS, preview-bar, and Google Fonts
         var originalWrite = document.write;
         document.write = function(content) {
           // Block Shopify CSS
@@ -113,9 +113,13 @@
             blockedCSS.push(content);
             return; // Don't write it
           }
-          // Block Google Fonts
-          if (content.includes('fonts.googleapis.com')) {
-            return; // Block Google Fonts completely (we have local)
+          // Block ALL Google Fonts requests (we have local fonts.css)
+          if (content.includes('fonts.googleapis.com') || content.includes('fonts.gstatic.com')) {
+            return; // Block Google Fonts completely
+          }
+          // Block Autoketing font cascade (100+ fonts causing 3,958ms critical path)
+          if (content.includes('cdn.autoketing.org') && content.includes('.css')) {
+            return; // Block Autoketing fonts
           }
           // Block Shopify preview-bar on live site (367 KiB savings)
           if (!isPreviewMode && content.includes('preview-bar')) {
@@ -153,8 +157,11 @@
                 
                 return; // Don't set href
               }
-              if (name === 'href' && value.includes('fonts.googleapis.com')) {
-                return; // Block Google Fonts
+              if (name === 'href' && (value.includes('fonts.googleapis.com') || value.includes('fonts.gstatic.com'))) {
+                return; // Block ALL Google Fonts
+              }
+              if (name === 'href' && value.includes('cdn.autoketing.org') && value.includes('.css')) {
+                return; // Block Autoketing font cascade
               }
               originalSetAttribute.call(element, name, value);
             };
@@ -1056,49 +1063,75 @@
               }
             });
             
-            // Optimize logo for mobile - Match Lighthouse recommendation (displayed 350x86)
+            // Optimize logo for mobile - CRITICAL: Force 350x86 (was still loading 2024x500)
             var logoImage = document.querySelector('.site-logo-image');
-            if (logoImage && isMobile) {
+            if (logoImage) {
               var logoSrc = logoImage.getAttribute('src');
-              if (logoSrc && (logoSrc.includes('2024x500') || logoSrc.includes('2400x593'))) {
-                // Optimize mobile logo: 2024x500 → 350x86 (exact display size for 44.8 KiB savings)
-                var optimizedLogoSrc = logoSrc.replace(/2024x500/g, '350x86').replace(/2400x593/g, '350x86').replace(/x200/g, 'x86');
-                logoImage.setAttribute('src', optimizedLogoSrc);
+              
+              if (isMobile && logoSrc) {
+                // Force 350x86 on mobile regardless of current size
+                var optimizedLogoSrc = logoSrc
+                  .replace(/2024x500/g, '350x86')
+                  .replace(/2400x593/g, '350x86')
+                  .replace(/x200/g, 'x86')
+                  .replace(/x\d{3,4}/g, 'x86'); // Catch any other sizes
                 
-                var logoSrcset = logoImage.getAttribute('srcset');
-                if (logoSrcset) {
-                  var optimizedLogoSrcset = logoSrcset.replace(/2024x500/g, '350x86').replace(/2400x593/g, '350x86').replace(/@2x/g, '');
-                  logoImage.setAttribute('srcset', optimizedLogoSrcset);
-                }
+                logoImage.setAttribute('src', optimizedLogoSrc);
+                logoImage.removeAttribute('srcset'); // Remove srcset to force single optimized image
+              }
+              
+              // Add fetchpriority=high if not already set
+              if (!logoImage.hasAttribute('fetchpriority')) {
+                logoImage.setAttribute('fetchpriority', 'high');
               }
             }
             
-            // Optimize promo-mosaic background images with aggressive mobile optimization
-            var promoBlocks = document.querySelectorAll('.promo-block[data-rimg-template]');
+            // CRITICAL: Add fetchpriority=high to LCP slideshow image
+            var lcpImage = document.querySelector('.slideshow-slide__image--mobile, .slideshow-slide__image');
+            if (lcpImage && !lcpImage.hasAttribute('fetchpriority')) {
+              lcpImage.setAttribute('fetchpriority', 'high');
+              lcpImage.setAttribute('loading', 'eager'); // Ensure not lazy loaded
+            }
+            
+            // Optimize promo-mosaic background images with EXTREME mobile optimization
+            var promoBlocks = document.querySelectorAll('.promo-block[data-rimg-template], .promo-block[data-rimg-max]');
             promoBlocks.forEach(function(block) {
-              var template = block.getAttribute('data-rimg-template');
               var maxSize = block.getAttribute('data-rimg-max');
               
-              if (template && maxSize) {
-                var dimensions = maxSize.split('x');
-                var width = parseInt(dimensions[0]);
-                var height = parseInt(dimensions[1]);
+              if (maxSize && isMobile) {
+                // CRITICAL: Force 108x108 on mobile for GIFs (was showing 390x390)
+                var targetSize = '108x108';
                 
-                // Mobile: reduce to 10% for GIFs (1080x1080 → 108x108) - EXTREME for 1,144 KiB savings
-                // Desktop: reduce to 50% for GIFs
-                var reductionFactor = isMobile ? 0.10 : 0.5;
-                var newWidth = Math.floor(width * reductionFactor);
-                var newHeight = Math.floor(height * reductionFactor);
+                // Update data attribute
+                block.setAttribute('data-rimg-max', targetSize);
                 
                 // Get current background image
                 var currentBg = window.getComputedStyle(block).backgroundImage;
                 if (currentBg && currentBg !== 'none') {
-                  // Extract URL and optimize
                   var urlMatch = currentBg.match(/url\(["']?([^"']*)["']?\)/);
                   if (urlMatch && urlMatch[1]) {
                     var url = urlMatch[1];
-                    // Replace size parameters
-                    var optimizedUrl = url.replace(/(\d+)x(\d+)/, newWidth + 'x' + newHeight);
+                    // Force replace ANY size with 108x108 on mobile
+                    var optimizedUrl = url.replace(/(\d+)x(\d+)/g, targetSize);
+                    block.style.backgroundImage = 'url(' + optimizedUrl + ')';
+                    
+                    // Force immediate update
+                    block.style.setProperty('background-image', 'url(' + optimizedUrl + ')', 'important');
+                  }
+                }
+              } else if (!isMobile && maxSize) {
+                // Desktop: 50% reduction
+                var dimensions = maxSize.split('x');
+                var width = Math.floor(parseInt(dimensions[0]) * 0.5);
+                var height = Math.floor(parseInt(dimensions[1]) * 0.5);
+                var desktopSize = width + 'x' + height;
+                
+                var currentBg = window.getComputedStyle(block).backgroundImage;
+                if (currentBg && currentBg !== 'none') {
+                  var urlMatch = currentBg.match(/url\(["']?([^"']*)["']?\)/);
+                  if (urlMatch && urlMatch[1]) {
+                    var url = urlMatch[1];
+                    var optimizedUrl = url.replace(/(\d+)x(\d+)/g, desktopSize);
                     block.style.backgroundImage = 'url(' + optimizedUrl + ')';
                   }
                 }
