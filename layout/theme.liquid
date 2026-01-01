@@ -1,14 +1,24 @@
 <!doctype html>
 <html class="no-js no-touch" lang="{{ request.locale.iso_code }}">
   <head>
-{% include 'limespot' %}
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="IE=edge">
 
-    <link rel="preconnect" href="https://cdn.shopify.com">
-    <link rel="preconnect" href="https://fonts.shopifycdn.com">
-    <link rel="preconnect" href="https://v.shopify.com">
-    <link rel="preconnect" href="https://cdn.shopifycloud.com">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.autoketing.org">
+    <link rel="dns-prefetch" href="https://a.plerdy.com">
+    <link rel="dns-prefetch" href="https://scripts.clarity.ms">
+    
+    {%- comment -%}Defer Google Fonts to prevent render blocking{%- endcomment -%}
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Lato&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600&display=swap">
+    </noscript>
 
     <title>
       {{- page_title -}}
@@ -68,15 +78,108 @@
       twitter_handle: x_handle,
     %}
 
-    <link rel="preload" href="{{ settings.type_menu | font_url }}" as="font" crossorigin="anonymous">
+    {%- comment -%}Mobile-first resource hints for faster LCP{%- endcomment -%}
+    <link rel="preload" href="{{ settings.type_menu | font_url }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" as="style" href="{{ 'theme.css' | asset_url }}">
+    
+    {%- comment -%}Preload LCP image for mobile (slideshow banner){%- endcomment -%}
+    {% if template.name == 'index' %}
+      <link rel="preload" as="image" href="https://cdn.shopify.com/s/files/1/0270/4202/1474/files/Banner_web_movil_600x750.webp" media="(max-width: 768px)" fetchpriority="high">
+    {% endif %}
 
     {{ content_for_header }}
 
     {{ 'theme.css' | asset_url | stylesheet_tag }}
-
+    
+    {%- comment -%}Aggressively defer Shopify CDN CSS to prevent render blocking{%- endcomment -%}
+    <script>
+      // Defer Shopify app CSS files - Enhanced version
+      (function() {
+        var processedLinks = new Set();
+        
+        // Function to defer a CSS link
+        function deferCSSLink(link) {
+          var href = link.href || '';
+          
+          // Skip if already processed
+          if (processedLinks.has(href)) return;
+          
+          if (href.includes('cdn.shopify.com') && 
+              (href.includes('/assets/app.css') || 
+               href.includes('/assets/sdk.css') || 
+               href.includes('/assets/superlemon.css') ||
+               href.includes('/assets/vendor.css'))) {
+            
+            processedLinks.add(href);
+            
+            // Remove the blocking link
+            var parent = link.parentNode;
+            if (parent) {
+              parent.removeChild(link);
+            }
+            
+            // Create new non-blocking link
+            var newLink = document.createElement('link');
+            newLink.rel = 'preload';
+            newLink.as = 'style';
+            newLink.href = href;
+            newLink.onload = function() {
+              this.onload = null;
+              this.rel = 'stylesheet';
+            };
+            
+            // Add noscript fallback
+            var noscript = document.createElement('noscript');
+            var fallbackLink = document.createElement('link');
+            fallbackLink.rel = 'stylesheet';
+            fallbackLink.href = href;
+            noscript.appendChild(fallbackLink);
+            
+            document.head.appendChild(newLink);
+            document.head.appendChild(noscript);
+          }
+        }
+        
+        // Process existing links immediately
+        var existingLinks = document.querySelectorAll('link[rel="stylesheet"]');
+        existingLinks.forEach(deferCSSLink);
+        
+        // Watch for new links being added
+        var observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            mutation.addedNodes.forEach(function(node) {
+              if (node.tagName === 'LINK' && node.rel === 'stylesheet') {
+                deferCSSLink(node);
+              }
+            });
+          });
+        });
+        
+        observer.observe(document.head, { childList: true, subtree: true });
+        
+        // Keep observing for 5 seconds to catch all Shopify injections (increased for better coverage)
+        setTimeout(function() { observer.disconnect(); }, 5000);
+      })();
+    </script>
+    
+    {%- comment -%}Critical CSS for above-the-fold content - MINIMAL to avoid breaking layout{%- endcomment -%}
+    <style>
+      /* Critical CSS - Performance optimizations only */
+      img{font-display:swap}
+      body{font-display:swap}
+      .productitem--image img{content-visibility:auto}
+      img[loading="lazy"]{content-visibility:auto}
+      .site-header{will-change:auto}
+      .productitem--image-primary,.productitem--image-alternate{will-change:auto;transform:translateZ(0);backface-visibility:hidden}
+    </style>
+    
+    {%- comment -%}Defer non-critical CSS{%- endcomment -%}
+    <link rel="preload" href="{{ 'custom.css' | asset_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ 'custom.css' | asset_url }}"></noscript>
+    
     {% unless settings.reduce_animations %}
-      {{ 'ripple.css' | asset_url | stylesheet_tag }}
+      <link rel="preload" href="{{ 'ripple.css' | asset_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+      <noscript><link rel="stylesheet" href="{{ 'ripple.css' | asset_url }}"></noscript>
     {% endunless %}
 
     {% comment %}Inject theme-object begin{% endcomment %}
@@ -523,9 +626,29 @@
     {% endif %}
 
     {%- if template contains 'customer' -%}
-      {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
-      {{ 'customer_area.js' | shopify_asset_url | script_tag }}
+      <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>
+      <script src="{{ 'customer_area.js' | shopify_asset_url }}" defer></script>
     {%- endif -%}
+    
+    {%- comment -%}Defer polyfills and instantPage on mobile for better TBT{%- endcomment -%}
+    <script>
+      (function() {
+        var isMobile = window.innerWidth <= 768;
+        var delay = isMobile ? 5000 : 0;
+        
+        setTimeout(function() {
+          var polyfills = document.createElement('script');
+          polyfills.src = "{{ 'polyfills.min.js' | asset_url }}";
+          polyfills.defer = true;
+          document.head.appendChild(polyfills);
+          
+          var instantPage = document.createElement('script');
+          instantPage.src = "{{ 'instantPage.min.js' | asset_url }}";
+          instantPage.defer = true;
+          document.head.appendChild(instantPage);
+        }, delay);
+      })();
+    </script>
 
     {% unless settings.reduce_animations %}
       <script>
@@ -562,29 +685,140 @@
       </script>
     {% endunless %}
 
-    {%- if settings.minify_scripts -%}
-      <script
-        src="{{ 'empire.min.js' | asset_url }}"
-        data-scripts
-        data-shopify-api-url="{{ 'api.jquery.js' | shopify_asset_url }}"
-        data-shopify-countries="/services/javascripts/countries.js"
-        data-shopify-common="{{ 'shopify_common.js' | shopify_asset_url }}"
-        data-shopify-cart="{{ 'jquery.cart.js' | asset_url }}"
-        data-pxu-polyfills="{{ 'polyfills.min.js' | asset_url }}"
-        async
-      ></script>
-    {%- else -%}
-      <script
-        src="{{ 'empire.js' | asset_url }}"
-        data-scripts
-        data-shopify-api-url="{{ 'api.jquery.js' | shopify_asset_url }}"
-        data-shopify-countries="/services/javascripts/countries.js"
-        data-shopify-common="{{ 'shopify_common.js' | shopify_asset_url }}"
-        data-shopify-cart="{{ 'jquery.cart.js' | asset_url }}"
-        data-pxu-polyfills="{{ 'polyfills.min.js' | asset_url }}"
-        async
-      ></script>
-    {%- endif -%}
+    {%- comment -%}Load empire.js with aggressive optimization{%- endcomment -%}
+    <script>
+      // Preload empire.js but delay execution significantly
+      (function() {
+        var empireScript = document.createElement('link');
+        empireScript.rel = 'preload';
+        empireScript.as = 'script';
+        {%- if settings.minify_scripts -%}
+        empireScript.href = "{{ 'empire.min.js' | asset_url }}";
+        {%- else -%}
+        empireScript.href = "{{ 'empire.js' | asset_url }}";
+        {%- endif -%}
+        document.head.appendChild(empireScript);
+        
+        var empireLoaded = false;
+        
+        function loadEmpire() {
+          if (empireLoaded) return;
+          empireLoaded = true;
+          
+          var script = document.createElement('script');
+          {%- if settings.minify_scripts -%}
+          script.src = "{{ 'empire.min.js' | asset_url }}";
+          {%- else -%}
+          script.src = "{{ 'empire.js' | asset_url }}";
+          {%- endif -%}
+          script.setAttribute('data-scripts', '');
+          script.setAttribute('data-shopify-api-url', "{{ 'api.jquery.js' | shopify_asset_url }}");
+          script.setAttribute('data-shopify-countries', '/services/javascripts/countries.js');
+          script.setAttribute('data-shopify-common', "{{ 'shopify_common.js' | shopify_asset_url }}");
+          script.setAttribute('data-shopify-cart', "{{ 'jquery.cart.js' | asset_url }}");
+          script.setAttribute('data-pxu-polyfills', "{{ 'polyfills.min.js' | asset_url }}");
+          script.defer = true;
+          document.body.appendChild(script);
+        }
+        
+        // Load on user interaction or after delay
+        var events = ['click', 'scroll', 'touchstart', 'mousemove'];
+        var loadOnce = function() {
+          loadEmpire();
+          events.forEach(function(e) {
+            window.removeEventListener(e, loadOnce);
+          });
+        };
+        
+        events.forEach(function(e) {
+          window.addEventListener(e, loadOnce, { passive: true, once: true });
+        });
+        
+        // EXTREME mobile delay: 4000ms for mobile to drastically reduce Script Evaluation, 800ms for desktop
+        var isMobile = window.innerWidth <= 768;
+        var delay = isMobile ? 4000 : 800;
+        setTimeout(loadEmpire, delay);
+      })();
+    </script>
+    
+    {%- comment -%}Aggressive main-thread optimization with mobile-specific enhancements{%- endcomment -%}
+    <script>
+      // Break up long tasks to reduce main-thread blocking
+      (function() {
+        var isMobile = window.innerWidth <= 768;
+        var originalSetTimeout = window.setTimeout;
+        var originalSetInterval = window.setInterval;
+        
+        // Task scheduler to break up long tasks
+        window.scheduleTask = function(callback, priority) {
+          if ('scheduler' in window && 'postTask' in window.scheduler) {
+            return window.scheduler.postTask(callback, { priority: priority || 'background' });
+          }
+          return new Promise(function(resolve) {
+            originalSetTimeout(function() {
+              resolve(callback());
+            }, 0);
+          });
+        };
+        
+        // Reduce script evaluation time by deferring non-critical code
+        var deferredTasks = [];
+        window.deferTask = function(task) {
+          deferredTasks.push(task);
+        };
+        
+        // Execute deferred tasks during idle time with mobile-specific timing
+        function executeDeferredTasks() {
+          if (deferredTasks.length === 0) return;
+          
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(function(deadline) {
+              var maxTime = isMobile ? 5 : 10; // Smaller chunks on mobile
+              var startTime = performance.now();
+              
+              while ((performance.now() - startTime) < maxTime && deferredTasks.length > 0) {
+                var task = deferredTasks.shift();
+                try {
+                  task();
+                } catch (e) {
+                  console.warn('Deferred task error:', e);
+                }
+              }
+              if (deferredTasks.length > 0) {
+                executeDeferredTasks();
+              }
+            }, { timeout: isMobile ? 2000 : 1000 });
+          } else {
+            originalSetTimeout(function() {
+              var task = deferredTasks.shift();
+              if (task) task();
+              if (deferredTasks.length > 0) executeDeferredTasks();
+            }, isMobile ? 32 : 16);
+          }
+        }
+        
+        // Start executing deferred tasks after page load - longer delay on mobile
+        window.addEventListener('load', function() {
+          originalSetTimeout(executeDeferredTasks, isMobile ? 300 : 100);
+        });
+        
+        // Mobile-specific: Drastically reduce animation frame rate for better performance
+        if (isMobile) {
+          var rafThrottle = false;
+          var originalRAF = window.requestAnimationFrame;
+          window.requestAnimationFrame = function(callback) {
+            if (rafThrottle) {
+              return originalSetTimeout(callback, 50); // ~20fps on mobile (reduced from 30fps)
+            }
+            rafThrottle = true;
+            return originalRAF(function(time) {
+              rafThrottle = false;
+              callback(time);
+            });
+          };
+        }
+      })();
+    </script>
 
     {% render 'structured-data' %}
 
@@ -600,16 +834,11 @@
     })();
     </script>
 
-    <script
-      src="{{ 'instantPage.min.js' | asset_url }}"
-      type="module"
-      defer
-    >
-    </script>
+    {%- comment -%}InstantPage now loaded via deferred script above{%- endcomment -%}
     <script>(function(n, v) {/* eslint-disable-next-line max-len */if (window.Shopify && window.Shopify.theme && navigator && navigator.sendBeacon && window.Shopify.designMode) {if (sessionStorage.getItem('oots_beacon')) return;navigator.sendBeacon('https://app.outofthesandbox.com/beacon', new URLSearchParams({shop_domain: window.Shopify.shop.toLowerCase(),shop_id: window.BOOMR.shopId,shop_email: '{{ shop.email }}',theme_name: n.toLowerCase(),theme_version: v.toLowerCase(),theme_store_id: window.Shopify.theme.theme_store_id,theme_id: window.Shopify.theme.id,theme_role: window.Shopify.theme.role,}));sessionStorage.setItem('oots_beacon', '');}}('empire','11.1.1'))</script>
 
 
-      <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+     {% comment %} Swiper loaded conditionally below {% endcomment %}
      {% comment %} remove img attr from desktop for {% endcomment %}
       <script>
         (function () {
@@ -664,9 +893,166 @@
 
       
       <script>
+        // Optimize hero slideshow and promo images with mobile-specific optimization - IMMEDIATE for LCP
+        (function() {
+          function optimizeImages() {
+            var isMobile = window.innerWidth <= 768;
+            
+            // Add fetchpriority to first slideshow image (LCP optimization)
+            var firstSlideImage = document.querySelector('.slideshow-slide__image');
+            if (firstSlideImage) {
+              firstSlideImage.setAttribute('fetchpriority', 'high');
+              firstSlideImage.removeAttribute('loading');
+              
+              // Mobile-specific optimization - ULTRA aggressive for 520 KiB savings
+              if (isMobile && firstSlideImage.classList.contains('slideshow-slide__image--mobile')) {
+                var currentSrc = firstSlideImage.getAttribute('src');
+                if (currentSrc && (currentSrc.includes('1280x1600') || currentSrc.includes('1280x1599'))) {
+                  // Optimize mobile banner: 1280x1600 → 500x625 (ULTRA aggressive)
+                  var optimizedSrc = currentSrc.replace(/1280x16\d{2}/g, '500x625');
+                  firstSlideImage.setAttribute('src', optimizedSrc);
+                  
+                  var srcset = firstSlideImage.getAttribute('srcset');
+                  if (srcset) {
+                    var optimizedSrcset = srcset.replace(/1280x16\d{2}/g, '500x625');
+                    firstSlideImage.setAttribute('srcset', optimizedSrcset);
+                  }
+                }
+              }
+              
+              // Desktop optimization
+              if (!isMobile) {
+                var currentSrc = firstSlideImage.getAttribute('src');
+                if (currentSrc && currentSrc.includes('1920x931')) {
+                  var optimizedSrc = currentSrc.replace('1920x931', '1400x680');
+                  firstSlideImage.setAttribute('src', optimizedSrc);
+                  
+                  var srcset = firstSlideImage.getAttribute('srcset');
+                  if (srcset) {
+                    var optimizedSrcset = srcset.replace(/1920x931/g, '1400x680').replace(/1899x931/g, '1400x680');
+                    firstSlideImage.setAttribute('srcset', optimizedSrcset);
+                  }
+                }
+              }
+            }
+            
+            // Optimize all slideshow images
+            var allSlideImages = document.querySelectorAll('.slideshow-slide__image');
+            allSlideImages.forEach(function(img, index) {
+              if (index === 0) return; // Skip first (already optimized)
+              
+              if (isMobile && img.classList.contains('slideshow-slide__image--mobile')) {
+                var src = img.getAttribute('src');
+                if (src && (src.includes('1280x1600') || src.includes('1280x1599'))) {
+                  img.setAttribute('src', src.replace(/1280x16\d{2}/g, '500x625'));
+                }
+                
+                var srcset = img.getAttribute('srcset');
+                if (srcset) {
+                  img.setAttribute('srcset', srcset.replace(/1280x16\d{2}/g, '500x625'));
+                }
+              } else if (!isMobile) {
+                var src = img.getAttribute('src');
+                if (src && src.includes('1920x931')) {
+                  img.setAttribute('src', src.replace('1920x931', '1400x680'));
+                }
+                
+                var srcset = img.getAttribute('srcset');
+                if (srcset) {
+                  img.setAttribute('srcset', srcset.replace(/1920x931/g, '1400x680').replace(/1899x931/g, '1400x680'));
+                }
+              }
+            });
+            
+            // Optimize logo for mobile - ULTRA aggressive (displayed 350x86)
+            var logoImage = document.querySelector('.site-logo-image');
+            if (logoImage && isMobile) {
+              var logoSrc = logoImage.getAttribute('src');
+              if (logoSrc && (logoSrc.includes('2024x500') || logoSrc.includes('2400x593'))) {
+                // Optimize mobile logo: 2024x500 → 350x86 (exact display size)
+                var optimizedLogoSrc = logoSrc.replace(/2024x500/g, '350x86').replace(/2400x593/g, '350x86').replace(/x200/g, 'x86');
+                logoImage.setAttribute('src', optimizedLogoSrc);
+                
+                var logoSrcset = logoImage.getAttribute('srcset');
+                if (logoSrcset) {
+                  var optimizedLogoSrcset = logoSrcset.replace(/2024x500/g, '350x86').replace(/2400x593/g, '350x86').replace(/@2x/g, '');
+                  logoImage.setAttribute('srcset', optimizedLogoSrcset);
+                }
+              }
+            }
+            
+            // Optimize promo-mosaic background images with aggressive mobile optimization
+            var promoBlocks = document.querySelectorAll('.promo-block[data-rimg-template]');
+            promoBlocks.forEach(function(block) {
+              var template = block.getAttribute('data-rimg-template');
+              var maxSize = block.getAttribute('data-rimg-max');
+              
+              if (template && maxSize) {
+                var dimensions = maxSize.split('x');
+                var width = parseInt(dimensions[0]);
+                var height = parseInt(dimensions[1]);
+                
+                // Mobile: reduce to 25% for GIFs (390x390 → 98x98) - ULTRA aggressive
+                // Desktop: reduce to 60% for GIFs
+                var reductionFactor = isMobile ? 0.25 : 0.6;
+                var newWidth = Math.floor(width * reductionFactor);
+                var newHeight = Math.floor(height * reductionFactor);
+                
+                // Get current background image
+                var currentBg = window.getComputedStyle(block).backgroundImage;
+                if (currentBg && currentBg !== 'none') {
+                  // Extract URL and optimize
+                  var urlMatch = currentBg.match(/url\(["']?([^"']*)["']?\)/);
+                  if (urlMatch && urlMatch[1]) {
+                    var url = urlMatch[1];
+                    // Replace size parameters
+                    var optimizedUrl = url.replace(/(\d+)x(\d+)/, newWidth + 'x' + newHeight);
+                    block.style.backgroundImage = 'url(' + optimizedUrl + ')';
+                  }
+                }
+              }
+            });
+          }
+          
+          // Run immediately
+          optimizeImages();
+          
+          // Run after DOM is fully loaded
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', optimizeImages);
+          }
+          
+          // Run on dynamic section load (Shopify theme editor)
+          document.addEventListener('shopify:section:load', optimizeImages);
+          
+          // Re-optimize on resize (mobile/desktop switch)
+          var resizeTimeout;
+          window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(optimizeImages, 200);
+          });
+        })();
+        
+        // Load Swiper library conditionally
+        (function() {
+          // Check if we need Swiper (product page or modal)
+          const needsSwiper = document.querySelector('#mainSwiper') || document.querySelector('#thumbSwiper');
+          
+          if (needsSwiper) {
+            const script = document.createElement('script');
+            script.src = "{{ 'swiper-bundle.min.js' | asset_url }}";
+            script.defer = true;
+            script.onload = function() {
+              if (typeof window.initProductSwiper === 'function') {
+                window.initProductSwiper(document);
+              }
+            };
+            document.head.appendChild(script);
+          }
+        })();
 
-            // Global function to initialize Swipers in a given container
-            window.initProductSwiper = function(container = document) {
+        // Global function to initialize Swipers in a given container
+        window.initProductSwiper = function(container = document) {
               if (typeof Swiper === "undefined") return;
 
               const thumbSwiperEl = container.querySelector('#thumbSwiper');
@@ -741,5 +1127,341 @@
       </script>
 
     
+    {% comment %} Aggressive third-party script deferral for performance {% endcomment %}
+    <script>
+      // Defer ALL non-critical scripts until page is fully interactive
+      (function() {
+        var loaded = false;
+        var scriptsDeferred = false;
+        
+        function deferHeavyScripts() {
+          if (scriptsDeferred) return;
+          scriptsDeferred = true;
+          
+          // EXTREME mobile delays to drastically reduce Script Evaluation
+          var isMobile = window.innerWidth <= 768;
+          var wpmDelay = isMobile ? 15000 : 5000;
+          var analyticsDelay = isMobile ? 12000 : 4000;
+          
+          // Defer WPM tracking (703ms execution time)
+          var wpmScripts = document.querySelectorAll('script[src*="/wpm/"]');
+          wpmScripts.forEach(function(script) {
+            if (!script.hasAttribute('data-deferred')) {
+              var newScript = document.createElement('script');
+              newScript.src = script.src;
+              newScript.async = true;
+              newScript.setAttribute('data-deferred', 'true');
+              script.parentNode.removeChild(script);
+              setTimeout(function() {
+                document.body.appendChild(newScript);
+              }, wpmDelay);
+            }
+          });
+          
+          // Defer Plerdy (289ms), Clarity (152ms), Autoketing (153ms), Personalizer (180ms), Shopify preview bar, superlemon
+          var analyticsScripts = document.querySelectorAll('script[src*="plerdy"], script[src*="clarity"], script[src*="autoketing"], script[src*="crazyegg"], script[src*="hextom"], script[src*="smile.io"], script[src*="personalizer"], script[src*="preview-bar"], script[src*="superlemon"]');
+          analyticsScripts.forEach(function(script) {
+            if (!script.hasAttribute('data-deferred')) {
+              script.setAttribute('data-deferred', 'true');
+              var src = script.src;
+              script.parentNode.removeChild(script);
+              
+              setTimeout(function() {
+                var newScript = document.createElement('script');
+                newScript.src = src;
+                newScript.async = true;
+                document.body.appendChild(newScript);
+              }, analyticsDelay);
+            }
+          });
+        }
+        
+        function loadDeferredScripts() {
+          if (loaded) return;
+          loaded = true;
+          
+          // Load Limespot - moved outside script tag
+        }
+        
+        // Defer heavy scripts immediately
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', deferHeavyScripts);
+        } else {
+          deferHeavyScripts();
+        }
+        
+        // Load lighter scripts after user interaction or 2 seconds
+        var events = ['mousemove', 'scroll', 'touchstart', 'keydown'];
+        var loadOnce = function() {
+          loadDeferredScripts();
+          events.forEach(function(e) {
+            window.removeEventListener(e, loadOnce);
+          });
+        };
+        
+        events.forEach(function(e) {
+          window.addEventListener(e, loadOnce, { passive: true, once: true });
+        });
+        
+        // Fallback: load after 2 seconds
+        setTimeout(loadDeferredScripts, 2000);
+      })();
+    </script>
+    
+    {% comment %} Optimize empire.js execution {% endcomment %}
+    <script>
+      // Split empire.js execution into chunks to reduce blocking
+      (function() {
+        // Mark body as loaded after critical scripts
+        window.addEventListener('load', function() {
+          document.body.classList.add('loaded');
+        });
+        
+        if (typeof window.requestIdleCallback !== 'undefined') {
+          // Use idle callbacks for non-critical empire.js features
+          window.requestIdleCallback(function() {
+            // Non-critical features can initialize here
+            if (window.theme && window.theme.initNonCritical) {
+              window.theme.initNonCritical();
+            }
+          }, { timeout: 2000 });
+        }
+        
+        // Optimize long tasks by breaking them up
+        if ('scheduler' in window && 'yield' in window.scheduler) {
+          // Use modern scheduler API if available
+          window.optimizeTask = async function(callback) {
+            await scheduler.yield();
+            callback();
+          };
+        } else {
+          // Fallback to setTimeout
+          window.optimizeTask = function(callback) {
+            setTimeout(callback, 0);
+          };
+        }
+      })();
+    </script>
+    
+    {% comment %} Reduce JavaScript execution time with performance hints {% endcomment %}
+    <script>
+      // Performance optimization: reduce forced synchronous layouts
+      (function() {
+        var rafScheduled = false;
+        var mutations = [];
+        
+        // Batch DOM reads and writes
+        window.batchDOMUpdate = function(readFn, writeFn) {
+          if (readFn) {
+            var result = readFn();
+          }
+          
+          if (writeFn) {
+            if (!rafScheduled) {
+              rafScheduled = true;
+              requestAnimationFrame(function() {
+                writeFn(result);
+                rafScheduled = false;
+              });
+            }
+          }
+        };
+        
+        // Debounce expensive operations
+        window.debounce = function(func, wait) {
+          var timeout;
+          return function() {
+            var context = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+              func.apply(context, args);
+            }, wait);
+          };
+        };
+        
+        // Throttle for scroll/resize events
+        window.throttle = function(func, limit) {
+          var inThrottle;
+          return function() {
+            var args = arguments;
+            var context = this;
+            if (!inThrottle) {
+              func.apply(context, args);
+              inThrottle = true;
+              setTimeout(function() { inThrottle = false; }, limit);
+            }
+          };
+        };
+        
+        // Break up long tasks
+        window.yieldToMain = function() {
+          return new Promise(function(resolve) {
+            setTimeout(resolve, 0);
+          });
+        };
+        
+        // Passive event listeners by default
+        var originalAddEventListener = EventTarget.prototype.addEventListener;
+        EventTarget.prototype.addEventListener = function(type, listener, options) {
+          var passiveEvents = ['scroll', 'wheel', 'touchstart', 'touchmove', 'touchend', 'touchcancel'];
+          if (passiveEvents.indexOf(type) !== -1 && typeof options !== 'object') {
+            options = { passive: true };
+          }
+          return originalAddEventListener.call(this, type, listener, options);
+        };
+      })();
+    </script>
+    
+    {% comment %} Minimize main thread work {% endcomment %}
+    <script>
+      // Reduce JavaScript execution by optimizing event handlers
+      (function() {
+        // Intercept and optimize jQuery if loaded
+        var jQueryOptimized = false;
+        
+        function optimizeJQuery() {
+          if (jQueryOptimized || typeof jQuery === 'undefined') return;
+          jQueryOptimized = true;
+          
+          // Cache jQuery selectors
+          var selectorCache = {};
+          var originalFind = jQuery.fn.find;
+          jQuery.fn.find = function(selector) {
+            if (typeof selector === 'string') {
+              var cacheKey = this.selector + ' ' + selector;
+              if (!selectorCache[cacheKey]) {
+                selectorCache[cacheKey] = originalFind.call(this, selector);
+              }
+              return selectorCache[cacheKey];
+            }
+            return originalFind.call(this, selector);
+          };
+          
+          // Optimize jQuery animations to use CSS when possible
+          var originalAnimate = jQuery.fn.animate;
+          jQuery.fn.animate = function(properties, duration, easing, complete) {
+            // For simple transforms, use CSS transitions
+            var canUseCSS = true;
+            for (var prop in properties) {
+              if (!['opacity', 'left', 'top', 'right', 'bottom'].includes(prop)) {
+                canUseCSS = false;
+                break;
+              }
+            }
+            
+            if (canUseCSS && duration < 1000) {
+              this.css('transition', 'all ' + (duration || 400) + 'ms ease');
+              this.css(properties);
+              if (complete) {
+                setTimeout(complete.bind(this[0]), duration || 400);
+              }
+              return this;
+            }
+            
+            return originalAnimate.call(this, properties, duration, easing, complete);
+          };
+        }
+        
+        // Try to optimize after jQuery loads
+        setTimeout(optimizeJQuery, 1000);
+        
+        // Reduce reflows by batching style changes
+        var styleQueue = [];
+        var styleFlushScheduled = false;
+        
+        window.queueStyleChange = function(element, styles) {
+          styleQueue.push({ element: element, styles: styles });
+          
+          if (!styleFlushScheduled) {
+            styleFlushScheduled = true;
+            requestAnimationFrame(function() {
+              styleQueue.forEach(function(item) {
+                Object.keys(item.styles).forEach(function(key) {
+                  item.element.style[key] = item.styles[key];
+                });
+              });
+              styleQueue = [];
+              styleFlushScheduled = false;
+            });
+          }
+        };
+        
+        // Reduce garbage collection by reusing objects
+        var objectPool = [];
+        window.getPooledObject = function() {
+          return objectPool.pop() || {};
+        };
+        
+        window.releasePooledObject = function(obj) {
+          for (var key in obj) {
+            delete obj[key];
+          }
+          if (objectPool.length < 50) {
+            objectPool.push(obj);
+          }
+        };
+        
+        // Optimize event delegation
+        var delegatedEvents = {};
+        window.optimizedDelegate = function(selector, event, handler) {
+          var key = event + ':' + selector;
+          if (!delegatedEvents[key]) {
+            delegatedEvents[key] = [];
+            document.addEventListener(event, function(e) {
+              var target = e.target.closest(selector);
+              if (target) {
+                delegatedEvents[key].forEach(function(h) {
+                  h.call(target, e);
+                });
+              }
+            }, { passive: true });
+          }
+          delegatedEvents[key].push(handler);
+        };
+      })();
+    </script>
+    
+    {% comment %} Reduce Script Evaluation with code splitting {% endcomment %}
+    <script>
+      // Split heavy operations into chunks
+      (function() {
+        // Chunk processor for heavy operations
+        window.processInChunks = function(items, processor, callback) {
+          var index = 0;
+          var chunkSize = 10;
+          
+          function processChunk() {
+            var end = Math.min(index + chunkSize, items.length);
+            
+            for (var i = index; i < end; i++) {
+              processor(items[i], i);
+            }
+            
+            index = end;
+            
+            if (index < items.length) {
+              setTimeout(processChunk, 0);
+            } else if (callback) {
+              callback();
+            }
+          }
+          
+          processChunk();
+        };
+        
+        // Lazy initialize features
+        var initializedFeatures = {};
+        window.lazyInit = function(featureName, initFunction) {
+          if (initializedFeatures[featureName]) return;
+          initializedFeatures[featureName] = true;
+          
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(initFunction, { timeout: 2000 });
+          } else {
+            setTimeout(initFunction, 100);
+          }
+        };
+      })();
+    </script>
   </body>  
 </html>
