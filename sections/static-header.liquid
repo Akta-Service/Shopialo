@@ -25,13 +25,34 @@
 {% assign logo_width = section.settings.logo_width | default: 200 %}
 {% assign logo_size = logo_width | prepend: 'x' %}
 
+{%- comment -%}Logo preload for LCP optimization{%- endcomment -%}
+{% if section.settings.logo %}
+  <link rel="preload" as="image" href="{{ section.settings.logo | img_url: '350x86' }}" fetchpriority="high" imagesrcset="{{ section.settings.logo | img_url: '350x86' }} 1x, {{ section.settings.logo | img_url: '700x172' }} 2x" imagesizes="350px">
+{% endif %}
+
 {% style %}
   .site-logo {
     max-width: {{ logo_width }}px;
+    position: relative;
+    z-index: 10;
   }
 
   .site-logo-image {
     max-height: {{ logo_height }}px;
+    position: relative;
+    z-index: 10;
+  }
+  
+  /* Fix logo positioning on desktop */
+  @media (min-width: 769px) {
+    .site-header-main-content {
+      position: relative;
+      z-index: 1;
+    }
+    .live-search-form {
+      position: relative;
+      z-index: 5;
+    }
   }
 {% endstyle %}
 
