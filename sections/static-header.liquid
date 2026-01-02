@@ -108,6 +108,15 @@
   .site-navigation::after {
     display: none !important;
   }
+  
+  /* Disable overlay dimming on desktop for dropdowns */
+  @media (min-width: 769px) {
+    [data-site-main-dimmer] {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+  }
 {% endstyle %}
 
 <header
