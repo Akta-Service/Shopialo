@@ -114,20 +114,23 @@
       .below-fold { visibility: hidden; }
       .below-fold.loaded { visibility: visible; }
       
-      /* Product page specific optimizations */
-      .product-details .product-block:not(:first-child) {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.3s, transform 0.3s;
-      }
-      .product-details .product-block:not(:first-child).loaded {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      
       /* General */
       img { max-width: 100%; height: auto; }
       * { box-sizing: border-box; }
+      
+      /* Fix dropdown and overlay issues */
+      .navmenu-link:hover {
+        text-decoration: none;
+      }
+      
+      .navmenu-depth-2 {
+        pointer-events: auto;
+      }
+      
+      /* Remove any overlays */
+      .overlay, .modal-overlay, .dropdown-overlay {
+        display: none !important;
+      }
     </style>
     
     
