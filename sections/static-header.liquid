@@ -42,11 +42,31 @@
   .site-header-main-content {
     position: relative;
     z-index: 10;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 20px;
+  }
+  
+  .site-header-logo {
+    position: relative;
+    z-index: 100;
+    flex-shrink: 0;
+    min-width: 200px;
   }
   
   .live-search-form {
     position: relative;
     z-index: 50;
+    flex: 1;
+    max-width: 400px;
+  }
+  
+  /* Ensure search bar doesn't overlap logo */
+  .site-header-main {
+    display: flex;
+    align-items: center;
+    gap: 15px;
   }
   
   /* Fix dropdown overlay issues */
