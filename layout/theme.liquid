@@ -4,19 +4,14 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="IE=edge">
 
-    {%- comment -%}PRIORITY: Preload logo FIRST before anything else in header{%- endcomment -%}
+    {%- comment -%}PRIORITY: Preload logo FIRST with proper responsive sizing{%- endcomment -%}
     {% assign logo_preload_size = 'x200' %}
-    <link rel="preload" as="image" href="{{ 'Logo_Shopialo.com.png' | file_img_url: logo_preload_size }}" fetchpriority="highest" imagesrcset="{{ 'Logo_Shopialo.com.png' | file_img_url: logo_preload_size }} 1x, {{ 'Logo_Shopialo.com.png' | file_img_url: logo_preload_size, scale: 2 }} 2x">
+    <link rel="preload" as="image" href="{{ 'Logo_Shopialo.com.png' | file_img_url: logo_preload_size }}" fetchpriority="highest" imagesrcset="{{ 'Logo_Shopialo.com.png' | file_img_url: '312x77', crop: 'center' }} 1x, {{ 'Logo_Shopialo.com.png' | file_img_url: '624x154', crop: 'center' }} 2x" imagesizes="312px">
     
-    {%- comment -%}Aggressive resource hints for third-party domains{%- endcomment -%}
+    {%- comment -%}Optimized resource hints - only critical origins{%- endcomment -%}
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
-    <link rel="dns-prefetch" href="https://cdn.hextom.com">
-    <link rel="dns-prefetch" href="https://scripts.clarity.ms">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="dns-prefetch" href="https://edge.personalizer.io">
-    <link rel="dns-prefetch" href="https://script.crazyegg.com">
-    <link rel="dns-prefetch" href="https://cdn.autoketing.org">
-    <link rel="dns-prefetch" href="https://a.plerdy.com">
     
     {%- comment -%}Local fonts - eliminates external requests for faster loading{%- endcomment -%}
     <link rel="preload" as="style" href="{{ 'fonts.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
@@ -85,6 +80,7 @@
     {%- comment -%}Mobile-first resource hints for faster LCP{%- endcomment -%}
     <link rel="preload" href="{{ settings.type_menu | font_url }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" as="style" href="{{ 'theme.css' | asset_url }}">
+    <link rel="preload" as="script" href="{{ 'swiper-bundle.min.js' | asset_url }}" crossorigin>
     
     {%- comment -%}Preload LCP image for mobile (slideshow banner){%- endcomment -%}
     {% if template.name == 'index' %}
@@ -271,6 +267,17 @@
       .below-fold { visibility: hidden; }
       .below-fold.loaded { visibility: visible; }
       
+      /* Product page specific optimizations */
+      .product-details .product-block:not(:first-child) {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.3s, transform 0.3s;
+      }
+      .product-details .product-block:not(:first-child).loaded {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      
       /* General */
       img { max-width: 100%; height: auto; }
       * { box-sizing: border-box; }
@@ -357,6 +364,39 @@
       {{ content_for_layout }}
 <limespot></limespot>
     </main>
+
+    {%- comment -%}Lazy loading for product sections{%- endcomment -%}
+    {% if template.name == 'product' %}
+      <script>
+        (function() {
+          'use strict';
+          
+          // Intersection Observer for lazy loading product sections
+          const observerOptions = {
+            root: null,
+            rootMargin: '50px',
+            threshold: 0.1
+          };
+          
+          const lazyObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('loaded');
+                lazyObserver.unobserve(entry.target);
+              }
+            });
+          }, observerOptions);
+          
+          // Observe product blocks except the first one
+          document.addEventListener('DOMContentLoaded', () => {
+            const productBlocks = document.querySelectorAll('.product-details .product-block:not(:first-child)');
+            productBlocks.forEach(block => {
+              lazyObserver.observe(block);
+            });
+          });
+        })();
+      </script>
+    {% endif %}
 
     {%- if settings.enable_back_to_top_button -%}
       {%- render 'back-to-top-button' -%}
@@ -734,11 +774,19 @@
       <script src="{{ 'customer_area.js' | shopify_asset_url }}" defer></script>
     {%- endif -%}
     
+    {%- comment -%}Mobile Performance Optimizer{%- endcomment -%}
+    <script src="{{ 'mobile-performance-optimizer.js' | asset_url }}" defer></script>
+    
+    {%- comment -%}Performance Testing (Development only){%- endcomment -%}
+    {% if shopify_device == 'desktop' or request.host contains 'shopifypreview.com' %}
+      <script src="{{ 'performance-test.js' | asset_url }}" defer></script>
+    {% endif %}
+    
     {%- comment -%}Defer polyfills and instantPage on mobile for better TBT{%- endcomment -%}
     <script>
       (function() {
         var isMobile = window.innerWidth <= 768;
-        var delay = isMobile ? 5000 : 0;
+        var delay = isMobile ? 5000 : 2000;
         
         setTimeout(function() {
           var polyfills = document.createElement('script');
@@ -753,6 +801,23 @@
         }, delay);
       })();
     </script>
+    
+    {%- comment -%}Defer Swiper JS for product gallery{%- endcomment -%}
+    {% if template.name == 'product' %}
+      <script>
+        (function() {
+          var isMobile = window.innerWidth <= 768;
+          var delay = isMobile ? 1000 : 500;
+          
+          setTimeout(function() {
+            var swiper = document.createElement('script');
+            swiper.src = "{{ 'swiper-bundle.min.js' | asset_url }}";
+            swiper.defer = true;
+            document.head.appendChild(swiper);
+          }, delay);
+        })();
+      </script>
+    {% endif %}
 
     {% unless settings.reduce_animations %}
       <script>
