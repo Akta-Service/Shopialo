@@ -39,13 +39,25 @@
       'facebook.com/tr',
       'clarity.ms',
       'autoketing.org',
-      'hextom.com',
+      'hextom.com'
+    ];
+    
+    // Don't defer essential Shopify scripts
+    var essentialScripts = [
+      'shopify.com',
       'personalizer.io',
-      'plerdy.com'
+      'cdn.shopify.com'
     ];
     
     var deferScript = function(script) {
       if (!script.src) return false;
+      
+      // Don't defer essential scripts
+      for (var i = 0; i < essentialScripts.length; i++) {
+        if (script.src.indexOf(essentialScripts[i]) !== -1) {
+          return false;
+        }
+      }
       
       for (var i = 0; i < scriptsToDefer.length; i++) {
         if (script.src.indexOf(scriptsToDefer[i]) !== -1) {
@@ -79,7 +91,7 @@
     var scripts = document.querySelectorAll('script[src]');
     scripts.forEach(deferScript);
     
-    // Intercept new script additions
+    // Intercept new script additions - be less aggressive
     var observer = new MutationObserver(function(mutations) {
       mutations.forEach(function(mutation) {
         mutation.addedNodes.forEach(function(node) {
@@ -91,7 +103,7 @@
     });
     
     observer.observe(document.head, { childList: true, subtree: true });
-    setTimeout(function() { observer.disconnect(); }, 10000);
+    setTimeout(function() { observer.disconnect(); }, 5000); // Shorter observation time
   }
   
   /**
