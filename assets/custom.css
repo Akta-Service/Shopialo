@@ -43,13 +43,11 @@
   position: relative;
 }
 
-/* Remove any desktop/mobile specific image hiding that may exist */
-.productitem--image.mobile {
-  display: none !important;
-}
-
-.productitem--image-desktop {
-  display: block !important;
+/* Ensure product images display correctly on all devices */
+.productitem--image-link img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 /* Optimize image rendering */
