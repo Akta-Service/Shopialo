@@ -4,10 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="IE=edge">
 
-    {%- comment -%}PRIORITY: Preload logo FIRST with proper responsive sizing{%- endcomment -%}
-    {% assign logo_preload_size = 'x200' %}
-    <link rel="preload" as="image" href="{{ 'Logo_Shopialo.com.png' | file_img_url: logo_preload_size }}" fetchpriority="highest" imagesrcset="{{ 'Logo_Shopialo.com.png' | file_img_url: '312x77', crop: 'center' }} 1x, {{ 'Logo_Shopialo.com.png' | file_img_url: '624x154', crop: 'center' }} 2x" imagesizes="312px">
-    
     {%- comment -%}Optimized resource hints - only critical origins{%- endcomment -%}
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -87,39 +83,26 @@
       <link rel="preload" as="image" href="https://cdn.shopify.com/s/files/1/0270/4202/1474/files/Banner_web_movil_600x750.webp" media="(max-width: 768px)" fetchpriority="high">
     {% endif %}
 
-    {%- comment -%}CRITICAL: Intercept content_for_header to block render-blocking CSS and preview-bar{%- endcomment -%}
+    {%- comment -%}LESS AGGRESSIVE: Block only non-essential render-blocking CSS{%- endcomment -%}
     <script>
-      // ULTRA-AGGRESSIVE: Block ALL render-blocking CSS and Shopify preview-bar before content_for_header loads
+      // Less aggressive blocking - only block non-essential CSS
       (function() {
         'use strict';
         var isMobile = window.innerWidth <= 768;
         var blockedCSS = [];
-        var isPreviewMode = window.location.hostname.includes('shopifypreview.com') || 
-                           window.Shopify && window.Shopify.designMode;
         
-        // Override document.write to intercept Shopify CSS, preview-bar, and Google Fonts
+        // Override document.write to intercept only non-essential CSS
         var originalWrite = document.write;
         document.write = function(content) {
-          // Block Shopify CSS
+          // Block only non-essential Shopify CSS
           if (content.includes('cdn.shopify.com') && 
-              (content.includes('/assets/app.css') || 
-               content.includes('/assets/sdk.css') || 
-               content.includes('/assets/superlemon.css') ||
-               content.includes('/assets/vendor.css'))) {
+              (content.includes('/assets/superlemon.css'))) {
             blockedCSS.push(content);
             return; // Don't write it
-          }
-          // Block ALL Google Fonts requests (we have local fonts.css)
-          if (content.includes('fonts.googleapis.com') || content.includes('fonts.gstatic.com')) {
-            return; // Block Google Fonts completely
           }
           // Block Autoketing font cascade (100+ fonts causing 3,958ms critical path)
           if (content.includes('cdn.autoketing.org') && content.includes('.css')) {
             return; // Block Autoketing fonts
-          }
-          // Block Shopify preview-bar on live site (367 KiB savings)
-          if (!isPreviewMode && content.includes('preview-bar')) {
-            return; // Block preview-bar scripts on live site
           }
           originalWrite.call(document, content);
         };
@@ -134,10 +117,7 @@
             element.setAttribute = function(name, value) {
               if (name === 'href' && 
                   (value.includes('cdn.shopify.com') && 
-                   (value.includes('/assets/app.css') || 
-                    value.includes('/assets/sdk.css') || 
-                    value.includes('/assets/superlemon.css') ||
-                    value.includes('/assets/vendor.css')))) {
+                   (value.includes('/assets/superlemon.css')))) {
                 // Defer this CSS
                 var href = value;
                 var loadDelay = isMobile ? 3000 : 500;
@@ -153,22 +133,8 @@
                 
                 return; // Don't set href
               }
-              if (name === 'href' && (value.includes('fonts.googleapis.com') || value.includes('fonts.gstatic.com'))) {
-                return; // Block ALL Google Fonts
-              }
               if (name === 'href' && value.includes('cdn.autoketing.org') && value.includes('.css')) {
                 return; // Block Autoketing font cascade
-              }
-              originalSetAttribute.call(element, name, value);
-            };
-          }
-          
-          if (tagName.toLowerCase() === 'script') {
-            var originalSetAttribute = element.setAttribute;
-            element.setAttribute = function(name, value) {
-              // Block preview-bar scripts on live site
-              if (!isPreviewMode && name === 'src' && value.includes('preview-bar')) {
-                return; // Don't set src for preview-bar
               }
               originalSetAttribute.call(element, name, value);
             };
@@ -183,7 +149,7 @@
 
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     
-    {%- comment -%}SECONDARY: Catch any CSS that slipped through{%- endcomment -%}
+    {%- comment -%}SECONDARY: Catch any non-essential CSS that slipped through{%- endcomment -%}
     <script>
       (function() {
         'use strict';
@@ -195,20 +161,14 @@
           if (processedLinks.has(href)) return;
           
           if ((href.includes('cdn.shopify.com') && 
-              (href.includes('/assets/app.css') || 
-               href.includes('/assets/sdk.css') || 
-               href.includes('/assets/superlemon.css') ||
-               href.includes('/assets/vendor.css'))) ||
-              href.includes('fonts.googleapis.com')) {
+              (href.includes('/assets/superlemon.css'))) ||
+              href.includes('cdn.autoketing.org') && href.includes('.css')) {
             
             processedLinks.add(href);
             
             if (link.parentNode) {
               link.parentNode.removeChild(link);
             }
-            
-            // Don't reload Google Fonts - we have local
-            if (href.includes('fonts.googleapis.com')) return;
             
             var loadDelay = isMobile ? 3000 : 500;
             setTimeout(function() {
@@ -774,8 +734,8 @@
       <script src="{{ 'customer_area.js' | shopify_asset_url }}" defer></script>
     {%- endif -%}
     
-    {%- comment -%}Mobile Performance Optimizer{%- endcomment -%}
-    <script src="{{ 'mobile-performance-optimizer.js' | asset_url }}" defer></script>
+    {%- comment -%}Conservative Mobile Performance Optimizer{%- endcomment -%}
+    <script src="{{ 'conservative-performance-optimizer.js' | asset_url }}" defer></script>
     
     {%- comment -%}Performance Testing (Development only){%- endcomment -%}
     {% if shopify_device == 'desktop' or request.host contains 'shopifypreview.com' %}
