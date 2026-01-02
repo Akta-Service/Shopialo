@@ -322,19 +322,8 @@
         {% if class != blank %}class="{{ class }}"{% endif %}
         {% if style != blank %}style="{{ style }}"{% endif %}
         {% if attr != blank %}{{ attr }}{% endif %}
-
-        {% unless has_variants %}
-        data-quick-buy
-      {% else %}
-        data-quickshop-slim
-      {% endunless %}
-      data-variant-id="{{ product.selected_or_first_available_variant.id }}"
-      {% if product == false or product_available == false %}
-        disabled
-      {% endif %}
-    
-    width="{{ rimg_w }}"
-    height="{{ rimg_h }}" 
+        width="{{ rimg_w }}"
+        height="{{ rimg_h }}" 
       >
     </noscript>
   {% endif %}
@@ -364,17 +353,8 @@
     {% if class != blank %}class="{{ class }}"{% endif %}
     {% if style != blank %}style="{{ style }}"{% endif %}
     {% if attr != blank %}{{ attr }}{% endif %}
-    {% unless has_variants %}
-        pre-data-quick-buy
-      {% else %}
-        pre-data-quickshop-slim
-      {% endunless %}
-      pre-data-variant-id="{{ product.selected_or_first_available_variant.id }}"
-      {% if product == false or product_available == false %}
-        disabled
-      {% endif %}
-      width="{{ rimg_w }}"
-      height="{{ rimg_h }}" 
+    width="{{ rimg_w }}"
+    height="{{ rimg_h }}" 
   >
 {% endif %}
 
