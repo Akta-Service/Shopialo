@@ -27,7 +27,7 @@
     position: relative;
     z-index: 50;
     flex: 1;
-    max-width: 500px;
+    max-width: 100px;
   }
   
   .live-search-form input {
