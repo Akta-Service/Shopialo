@@ -1,6 +1,7 @@
 <!-- Shopify Product Gallery using Swiper + product.media -->
 <!-- Include Swiper CSS - LOCAL for faster loading -->
-<link rel="stylesheet" href="{{ 'swiper-bundle.min.css' | asset_url }}" />
+<link rel="preload" href="{{ 'swiper-bundle.min.css' | asset_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="{{ 'swiper-bundle.min.css' | asset_url }}"></noscript>
 
 <style>
   .product-gallery {
@@ -176,9 +177,22 @@
 
 <div class="product-gallery">
 
-  <!-- quickshop image -->
+  <!-- Quick view image - optimized with responsive sizing -->
   <div class="quick-view-product-image">
-    <img src="{{  product.images[0] | image_url }}" width="" height="" alt="{{ product.title }}">
+    <img 
+      src="{{ product.images[0] | image_url: width: 490, height: 734, crop: 'center' }}" 
+      srcset="
+        {{ product.images[0] | image_url: width: 245, height: 367, crop: 'center' }} 245w,
+        {{ product.images[0] | image_url: width: 490, height: 734, crop: 'center' }} 490w,
+        {{ product.images[0] | image_url: width: 735, height: 1101, crop: 'center' }} 735w
+      "
+      sizes="(max-width: 600px) 245px, 490px"
+      width="490" 
+      height="734" 
+      alt="{{ product.title | escape }}"
+      loading="eager"
+      fetchpriority="high"
+    >
   </div>
 
 
@@ -191,7 +205,23 @@
     <div class="swiper-wrapper">
       {% for media in product.media %}
         <div class="swiper-slide">
-          {{ media | image_url: width: 200 | image_tag: class: 'thumb-img' }}
+          {% if media.media_type == 'image' %}
+            <img 
+              src="{{ media | image_url: width: 80, height: 80, crop: 'center' }}" 
+              srcset="
+                {{ media | image_url: width: 80, height: 80, crop: 'center' }} 80w,
+                {{ media | image_url: width: 160, height: 160, crop: 'center' }} 160w
+              "
+              sizes="80px"
+              width="80" 
+              height="80" 
+              alt="{{ media.alt | default: product.title | escape }}"
+              loading="lazy"
+              class="thumb-img"
+            >
+          {% else %}
+            {{ media | image_url: width: 80, height: 80, crop: 'center' | image_tag: class: 'thumb-img' }}
+          {% endif %}
         </div>
       {% endfor %}
     </div>
@@ -204,10 +234,27 @@
         <div class="swiper-slide">
           {% case media.media_type %}
             {% when 'image' %}
-              {{ media | image_url: width: 2000 | image_tag }}
+              <img 
+                src="{{ media | image_url: width: 490, height: 734, crop: 'center' }}" 
+                srcset="
+                  {{ media | image_url: width: 245, height: 367, crop: 'center' }} 245w,
+                  {{ media | image_url: width: 490, height: 734, crop: 'center' }} 490w,
+                  {{ media | image_url: width: 735, height: 1101, crop: 'center' }} 735w,
+                  {{ media | image_url: width: 980, height: 1468, crop: 'center' }} 980w
+                "
+                sizes="(max-width: 600px) 245px, (max-width: 900px) 490px, 735px"
+                width="490" 
+                height="734" 
+                alt="{{ media.alt | default: product.title | escape }}"
+                {% if forloop.first %}
+                  loading="eager"
+                  fetchpriority="high"
+                {% else %}
+                  loading="lazy"
+                {% endif %}
+              >
             {% when 'video' %}
-              {{ media | video_tag: controls: true }}
-            
+              {{ media | video_tag: controls: true, image_size: '735x1101' }}
           {% endcase %}
         </div>
       {% endfor %}
