@@ -38,35 +38,37 @@
     z-index: 100;
   }
   
-  /* Fix header positioning issues */
-  .site-header-main-content {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    flex: 1;
-    gap: 20px;
-  }
-  
-  .site-header-logo {
-    position: relative;
-    z-index: 100;
-    flex-shrink: 0;
-    min-width: 200px;
-  }
-  
-  .live-search-form {
-    position: relative;
-    z-index: 50;
-    flex: 1;
-    max-width: 100%;
-  }
-  
-  /* Ensure search bar doesn't overlap logo */
-  .site-header-main {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  /* Fix header positioning issues - DESKTOP ONLY */
+  @media (min-width: 769px) {
+    .site-header-main-content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      flex: 1;
+      gap: 20px;
+    }
+    
+    .site-header-logo {
+      position: relative;
+      z-index: 100;
+      flex-shrink: 0;
+      min-width: 200px;
+    }
+    
+    .live-search-form {
+      position: relative;
+      z-index: 50;
+      flex: 1;
+      max-width: 100%;
+    }
+    
+    /* Ensure search bar doesn't overlap logo */
+    .site-header-main {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
   }
   
   /* Fix dropdown overlay issues */
