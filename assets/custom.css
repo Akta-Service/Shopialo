@@ -1,3 +1,40 @@
+/* Header Layout Fix - Desktop Search Bar Overlay */
+@media (min-width: 769px) {
+  .site-header-main {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+  }
+  
+  .site-header-logo {
+    position: relative;
+    z-index: 100;
+    flex-shrink: 0;
+    min-width: 200px;
+  }
+  
+  .site-header-main-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 20px;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .live-search-form {
+    position: relative;
+    z-index: 50;
+    flex: 1;
+    max-width: 500px;
+  }
+  
+  .live-search-form input {
+    width: 100%;
+  }
+}
+
 /* Performance Optimizations - Phase 2 & 3: Image & Rendering Optimization */
 
 /* Ensure single responsive image works across all devices */
