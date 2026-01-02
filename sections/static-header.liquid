@@ -28,10 +28,65 @@
 {% style %}
   .site-logo {
     max-width: {{ logo_width }}px;
+    position: relative;
+    z-index: 100;
   }
 
   .site-logo-image {
     max-height: {{ logo_height }}px;
+    position: relative;
+    z-index: 100;
+  }
+  
+  /* Fix header positioning issues */
+  .site-header-main-content {
+    position: relative;
+    z-index: 10;
+  }
+  
+  .live-search-form {
+    position: relative;
+    z-index: 50;
+  }
+  
+  /* Fix dropdown overlay issues */
+  .site-navigation {
+    position: relative;
+    z-index: 200;
+  }
+  
+  .site-header-nav {
+    position: relative;
+    z-index: 150;
+  }
+  
+  /* Fix dropdown hover issues */
+  .navmenu-depth-1 > .navmenu-item {
+    position: relative;
+  }
+  
+  .navmenu-depth-2 {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 300;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    min-width: 200px;
+  }
+  
+  .navmenu-depth-1 > .navmenu-item:hover .navmenu-depth-2 {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Remove any black overlays */
+  .site-header::before,
+  .site-header::after,
+  .site-navigation::before,
+  .site-navigation::after {
+    display: none !important;
   }
 {% endstyle %}
 
