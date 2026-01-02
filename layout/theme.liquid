@@ -83,122 +83,9 @@
       <link rel="preload" as="image" href="https://cdn.shopify.com/s/files/1/0270/4202/1474/files/Banner_web_movil_600x750.webp" media="(max-width: 768px)" fetchpriority="high">
     {% endif %}
 
-    {%- comment -%}LESS AGGRESSIVE: Block only non-essential render-blocking CSS{%- endcomment -%}
-    <script>
-      // Less aggressive blocking - only block non-essential CSS
-      (function() {
-        'use strict';
-        var isMobile = window.innerWidth <= 768;
-        var blockedCSS = [];
-        
-        // Override document.write to intercept only non-essential CSS
-        var originalWrite = document.write;
-        document.write = function(content) {
-          // Block only non-essential Shopify CSS
-          if (content.includes('cdn.shopify.com') && 
-              (content.includes('/assets/superlemon.css'))) {
-            blockedCSS.push(content);
-            return; // Don't write it
-          }
-          // Block Autoketing font cascade (100+ fonts causing 3,958ms critical path)
-          if (content.includes('cdn.autoketing.org') && content.includes('.css')) {
-            return; // Block Autoketing fonts
-          }
-          originalWrite.call(document, content);
-        };
-        
-        // Also intercept createElement for link and script tags
-        var originalCreateElement = document.createElement;
-        document.createElement = function(tagName) {
-          var element = originalCreateElement.call(document, tagName);
-          
-          if (tagName.toLowerCase() === 'link') {
-            var originalSetAttribute = element.setAttribute;
-            element.setAttribute = function(name, value) {
-              if (name === 'href' && 
-                  (value.includes('cdn.shopify.com') && 
-                   (value.includes('/assets/superlemon.css')))) {
-                // Defer this CSS
-                var href = value;
-                var loadDelay = isMobile ? 3000 : 500;
-                
-                setTimeout(function() {
-                  var link = originalCreateElement.call(document, 'link');
-                  link.rel = 'preload';
-                  link.as = 'style';
-                  link.href = href;
-                  link.onload = function() { this.rel = 'stylesheet'; };
-                  document.head.appendChild(link);
-                }, loadDelay);
-                
-                return; // Don't set href
-              }
-              if (name === 'href' && value.includes('cdn.autoketing.org') && value.includes('.css')) {
-                return; // Block Autoketing font cascade
-              }
-              originalSetAttribute.call(element, name, value);
-            };
-          }
-          
-          return element;
-        };
-      })();
-    </script>
-
     {{ content_for_header }}
 
     {{ 'theme.css' | asset_url | stylesheet_tag }}
-    
-    {%- comment -%}SECONDARY: Catch any non-essential CSS that slipped through{%- endcomment -%}
-    <script>
-      (function() {
-        'use strict';
-        var isMobile = window.innerWidth <= 768;
-        var processedLinks = new Set();
-        
-        function deferCSSLink(link) {
-          var href = link.href || '';
-          if (processedLinks.has(href)) return;
-          
-          if ((href.includes('cdn.shopify.com') && 
-              (href.includes('/assets/superlemon.css'))) ||
-              href.includes('cdn.autoketing.org') && href.includes('.css')) {
-            
-            processedLinks.add(href);
-            
-            if (link.parentNode) {
-              link.parentNode.removeChild(link);
-            }
-            
-            var loadDelay = isMobile ? 3000 : 500;
-            setTimeout(function() {
-              var newLink = document.createElement('link');
-              newLink.rel = 'preload';
-              newLink.as = 'style';
-              newLink.href = href;
-              newLink.onload = function() { this.rel = 'stylesheet'; };
-              document.head.appendChild(newLink);
-            }, loadDelay);
-          }
-        }
-        
-        var existingLinks = document.querySelectorAll('link[rel="stylesheet"]');
-        existingLinks.forEach(deferCSSLink);
-        
-        var observer = new MutationObserver(function(mutations) {
-          mutations.forEach(function(mutation) {
-            mutation.addedNodes.forEach(function(node) {
-              if (node.tagName === 'LINK' && node.rel === 'stylesheet') {
-                deferCSSLink(node);
-              }
-            });
-          });
-        });
-        
-        observer.observe(document.head, { childList: true, subtree: true });
-        setTimeout(function() { observer.disconnect(); }, 10000);
-      })();
-    </script>
     
     {%- comment -%}CRITICAL CSS - Hero section loads instantly{%- endcomment -%}
     <style>
@@ -734,8 +621,61 @@
       <script src="{{ 'customer_area.js' | shopify_asset_url }}" defer></script>
     {%- endif -%}
     
-    {%- comment -%}Conservative Mobile Performance Optimizer{%- endcomment -%}
-    <script src="{{ 'conservative-performance-optimizer.js' | asset_url }}" defer></script>
+    {%- comment -%}Essential scripts for functionality{%- endcomment -%}
+    <script src="{{ 'swiper-bundle.min.js' | asset_url }}" defer></script>
+    
+    {%- comment -%}Minimal Performance Optimizer - Safe for all functionality{%- endcomment -%}
+    <script>
+      (function() {
+        'use strict';
+        var isMobile = window.innerWidth <= 768;
+        
+        // Only defer truly non-essential analytics scripts
+        function deferAnalytics() {
+          var analyticsScripts = [
+            'googletagmanager.com',
+            'facebook.com/tr',
+            'clarity.ms'
+          ];
+          
+          setTimeout(function() {
+            var scripts = document.querySelectorAll('script[src]');
+            scripts.forEach(function(script) {
+              if (!script.src) return;
+              
+              for (var i = 0; i < analyticsScripts.length; i++) {
+                if (script.src.indexOf(analyticsScripts[i]) !== -1 && script.parentNode) {
+                  // Only defer if not already loaded
+                  var deferredScript = document.createElement('script');
+                  deferredScript.src = script.src;
+                  deferredScript.async = true;
+                  deferredScript.defer = true;
+                  
+                  // Copy attributes
+                  for (var j = 0; j < script.attributes.length; j++) {
+                    var attr = script.attributes[j];
+                    if (attr.name !== 'src') {
+                      deferredScript.setAttribute(attr.name, attr.value);
+                    }
+                  }
+                  
+                  script.parentNode.removeChild(script);
+                  document.head.appendChild(deferredScript);
+                  break;
+                }
+              }
+            });
+          }, isMobile ? 3000 : 1000);
+        }
+        
+        // Run after page load
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', deferAnalytics);
+        } else {
+          deferAnalytics();
+        }
+      })();
+    </script>
     
     {%- comment -%}Performance Testing (Development only){%- endcomment -%}
     {% if shopify_device == 'desktop' or request.host contains 'shopifypreview.com' %}
@@ -762,22 +702,6 @@
       })();
     </script>
     
-    {%- comment -%}Defer Swiper JS for product gallery{%- endcomment -%}
-    {% if template.name == 'product' %}
-      <script>
-        (function() {
-          var isMobile = window.innerWidth <= 768;
-          var delay = isMobile ? 1000 : 500;
-          
-          setTimeout(function() {
-            var swiper = document.createElement('script');
-            swiper.src = "{{ 'swiper-bundle.min.js' | asset_url }}";
-            swiper.defer = true;
-            document.head.appendChild(swiper);
-          }, delay);
-        })();
-      </script>
-    {% endif %}
 
     {% unless settings.reduce_animations %}
       <script>
