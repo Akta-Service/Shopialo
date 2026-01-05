@@ -18,7 +18,6 @@
 
   <section
     class="product-section--container product-row--container product-recommendations--container below-fold"
-    data-html="{{ recommendations.products | map: 'id' | json | escape }}"
     data-product-recommendations
   >
     {% if section.settings.product_recommendations_heading != blank %}
