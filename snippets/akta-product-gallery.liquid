@@ -1,6 +1,6 @@
-<!-- Shopify Product Gallery using Swiper + product.media -->
-<!-- Include Swiper CSS - LOCAL for faster loading -->
-<link rel="preload" href="{{ 'swiper-bundle.min.css' | asset_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<!-- OPTIMIZATION: Shopify Product Gallery - Deferred Swiper loading for TBT reduction -->
+<!-- OPTIMIZATION: Swiper CSS deferred via progressive loader -->
+<link rel="preload" href="{{ 'swiper-bundle.min.css' | asset_url }}" as="style">
 <noscript><link rel="stylesheet" href="{{ 'swiper-bundle.min.css' | asset_url }}"></noscript>
 
 <style>
@@ -177,7 +177,7 @@
 
 <div class="product-gallery">
 
-  <!-- Quick view image - optimized with responsive sizing -->
+  <!-- OPTIMIZATION: LCP image - eager load with fetchpriority for sub-2.5s LCP -->
   <div class="quick-view-product-image">
     <img 
       src="{{ product.images[0] | image_url: width: 490, height: 734, crop: 'center' }}" 
@@ -192,6 +192,7 @@
       alt="{{ product.title | escape }}"
       loading="eager"
       fetchpriority="high"
+      decoding="async"
     >
   </div>
 
@@ -200,7 +201,7 @@
 
 
 
-  <!-- Thumbnails -->
+  <!-- OPTIMIZATION: Thumbnails - lazy load via progressive loader Batch 3 -->
   <div class="swiper swiper-thumbs" id="thumbSwiper">
     <div class="swiper-wrapper">
       {% for media in product.media %}
@@ -217,6 +218,7 @@
               height="80" 
               alt="{{ media.alt | default: product.title | escape }}"
               loading="lazy"
+              decoding="async"
               class="thumb-img"
             >
           {% else %}
@@ -227,7 +229,7 @@
     </div>
   </div>
 
-  <!-- Main Images -->
+  <!-- OPTIMIZATION: Main Images - first eager for LCP, rest lazy via Batch 3 -->
   <div class="swiper swiper-main" id="mainSwiper">
     <div class="swiper-wrapper">
       {% for media in product.media %}
@@ -246,6 +248,7 @@
                 width="490" 
                 height="734" 
                 alt="{{ media.alt | default: product.title | escape }}"
+                decoding="async"
                 {% if forloop.first %}
                   loading="eager"
                   fetchpriority="high"
