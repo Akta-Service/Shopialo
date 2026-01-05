@@ -16,40 +16,25 @@
 }
   </script>
 
-  <!-- OPTIMIZATION: CSS skeleton for CLS=0 - Recommendations load via observer in Batch 4 -->
+  <!-- OPTIMIZATION: Deferred via progressive loader Batch 4 for TBT reduction -->
   <section
     class="product-section--container product-row--container product-recommendations--container"
     data-html
     data-product-recommendations
-    data-observer-section="recommendations"
     >
     {% if recommendations.products_count > 0 %}
       <h2 class="product-section--title product-recommendations--title">
         {{ section.settings.product_recommendations_heading }}
       </h2>
 
-    <!-- OPTIMIZATION: Skeleton grid for instant paint with CLS=0 -->
-    <div class="product-section--content product-row" data-skeleton-grid style="display:grid;">
-      {% for i in (1..product_limit) %}
-        <div class="skeleton-product-card">
-          <div class="skeleton-product-image"></div>
-          <div class="skeleton-product-title"></div>
-          <div class="skeleton-product-price"></div>
-        </div>
-      {% endfor %}
-    </div>
-
-    <!-- OPTIMIZATION: Real products hidden until observer loads them -->
     <div
       class="product-section--content product-row"
       data-product-row
-      style="display:none;"
       >
       {% for product in recommendations.products limit: product_limit %}
         {%
           render 'product-grid-item',
           product: product,
-          lazy_images: true
         %}
       {% endfor %}
     </div>
