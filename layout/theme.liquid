@@ -1135,6 +1135,57 @@
             resizeTimeout = setTimeout(optimizeImages, 200);
           });
         })();
+      </script>
+
+      <script>
+        // Fix rimg lazy loading on mobile - ensure src is updated from srcset
+        (function() {
+          'use strict';
+          
+          function fixRimgSrc() {
+            // Find all images with data-rimg="loaded" that still have placeholder src
+            var images = document.querySelectorAll('img[data-rimg="loaded"]');
+            
+            images.forEach(function(img) {
+              var src = img.getAttribute('src');
+              var srcset = img.getAttribute('srcset');
+              
+              // If src is still a placeholder SVG but srcset has real image URL
+              if (src && src.includes('data:image/svg+xml') && srcset && !srcset.includes('data:image/svg+xml')) {
+                // Extract the actual image URL from srcset
+                var srcsetParts = srcset.split(',')[0].trim().split(' ');
+                var actualImageUrl = srcsetParts[0];
+                
+                // Update src with the actual image URL
+                if (actualImageUrl && actualImageUrl.includes('cdn.shopify.com')) {
+                  img.setAttribute('src', actualImageUrl);
+                }
+              }
+            });
+          }
+          
+          // Run immediately
+          fixRimgSrc();
+          
+          // Run after DOM is fully loaded
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fixRimgSrc);
+          } else {
+            setTimeout(fixRimgSrc, 100);
+          }
+          
+          // Run periodically for dynamically loaded content
+          setInterval(fixRimgSrc, 500);
+          
+          // Run on rimg:load event
+          document.addEventListener('rimg:load', fixRimgSrc);
+          
+          // Run on Shopify section load
+          document.addEventListener('shopify:section:load', fixRimgSrc);
+        })();
+      </script>
+
+      <script>
                 // ULTRA-AGGRESSIVE LAZY LOAD - Hero loads <1s, everything else lazy
         (function() {
           'use strict';
