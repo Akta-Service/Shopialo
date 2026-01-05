@@ -126,9 +126,7 @@
       .promo-mosaic--inner { display: grid; gap: 10px; }
       .promo-block { aspect-ratio: 1; background-size: cover; background-position: center; }
       
-      /* OPTIMIZATION: Product recommendations placeholder */
-      .product-recommendations--container { padding: 40px 20px; min-height: 400px; }
-      .product-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+      /* OPTIMIZATION: Product recommendations placeholder - removed grid override to preserve theme layout */
       
       /* OPTIMIZATION: Lazy sections - prevent CLS */
       .lazy-section { min-height: 300px; opacity: 0; transition: opacity 0.3s; }
