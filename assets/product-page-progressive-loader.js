@@ -123,37 +123,25 @@
     logProgress('Batch 3 loaded:', batch3Items.join(', '));
   }
   
-  /* OPTIMIZATION: Batch 4 - Product recommendations and below-fold content */
+  /* OPTIMIZATION: Batch 4 - Product recommendations lazy loading */
   function loadBatch4() {
     if (batchesLoaded.batch4) return;
     batchesLoaded.batch4 = true;
     
     const batch4Items = [];
     
-    // Load product recommendations section
+    // Load product recommendations images with lazy loading
     const recommendationsSection = document.querySelector('[data-product-recommendations]');
     if (recommendationsSection) {
-      recommendationsSection.style.visibility = 'visible';
-      recommendationsSection.style.opacity = '1';
-      
       // Load recommendation images
       const recImages = recommendationsSection.querySelectorAll('img[loading="lazy"]');
       recImages.forEach(img => {
         img.loading = 'eager';
       });
       
-      batch3Items.push(`Recommendations: ${recImages.length} products`);
-    }
-    
-    // Load below-fold sections
-    const belowFoldSections = document.querySelectorAll('.below-fold');
-    belowFoldSections.forEach(section => {
-      section.classList.add('loaded');
-      section.style.visibility = 'visible';
-    });
-    
-    if (belowFoldSections.length > 0) {
-      batch4Items.push(`Sections: ${belowFoldSections.length} below-fold`);
+      if (recImages.length > 0) {
+        batch4Items.push(`Recommendations: ${recImages.length} products`);
+      }
     }
     
     logProgress('Batch 4 loaded:', batch4Items.join(', '));
