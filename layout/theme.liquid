@@ -7,13 +7,30 @@
     {%- comment -%}Optimized resource hints - only critical origins{%- endcomment -%}
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://edge.personalizer.io">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://connect.facebook.net">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
     
-    {%- comment -%}Local fonts - eliminates external requests for faster loading{%- endcomment -%}
+    {%- comment -%}Optimized font loading with font-display: swap{%- endcomment -%}
+    <link rel="preload" href="{{ settings.type_menu | font_url }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ settings.type_body | font_url }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" as="style" href="{{ 'fonts.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
       <link rel="stylesheet" href="{{ 'fonts.css' | asset_url }}">
     </noscript>
+    
+    {%- comment -%}Font display optimization{%- endcomment -%}
+    <style>
+      @font-face {
+        font-family: 'System Font';
+        src: local('-apple-system'), local('BlinkMacSystemFont'), local('Segoe UI'), local('Roboto'), local('Helvetica Neue', local('Arial'), sans-serif;
+        font-display: swap;
+      }
+      body { font-family: 'System Font', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    </style>
 
     <title>
       {{- page_title -}}
@@ -74,7 +91,6 @@
     %}
 
     {%- comment -%}Mobile-first resource hints for faster LCP{%- endcomment -%}
-    <link rel="preload" href="{{ settings.type_menu | font_url }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" as="style" href="{{ 'theme.css' | asset_url }}">
     <link rel="preload" as="script" href="{{ 'swiper-bundle.min.js' | asset_url }}" crossorigin>
     
@@ -82,31 +98,65 @@
     {% if template.name == 'index' %}
       <link rel="preload" as="image" href="https://cdn.shopify.com/s/files/1/0270/4202/1474/files/Banner_web_movil_600x750.webp" media="(max-width: 768px)" fetchpriority="high">
     {% endif %}
+    
+    {%- comment -%}Product page image optimization{%- endcomment -%}
+    {% if template.name == 'product' %}
+      <link rel="preload" as="image" href="{{ product.featured_image | img_url: '600x600' }}" media="(max-width: 768px)" fetchpriority="high">
+      <link rel="preload" as="image" href="{{ product.featured_image | img_url: '800x800' }}" media="(min-width: 769px)" fetchpriority="high">
+    {% endif %}
 
     {{ content_for_header }}
 
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     
-    {%- comment -%}CRITICAL CSS - Hero section loads instantly{%- endcomment -%}
+    {%- comment -%}CRITICAL CSS - Instant load for sub-2s performance{%- endcomment -%}
     <style>
       /* Instant load essentials */
-      body { margin: 0; opacity: 1; background: #fff; }
+      body { margin: 0; opacity: 1; background: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
       
       /* Header - critical for <1s load */
       .site-header { position: relative; background: #fff; z-index: 100; }
       .site-header-main { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; }
+      .site-logo-image { max-width: 200px; height: auto; }
       
-      /* Mobile header fix */
+      /* Mobile header */
       @media (max-width: 768px) {
         .site-header-main-content .live-search-form { display: block; }
+        .site-logo-image { max-width: 150px; }
       }
       
-      /* Hero/Slideshow - critical for <1s load */
+      /* Product Grid - Critical for product pages */
+      .productgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
+      .productitem { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+      .productitem__image-container { position: relative; width: 100%; aspect-ratio: 1; overflow: hidden; }
+      .productitem--image { width: 100%; height: 100%; object-fit: cover; }
+      .productitem--info { padding: 15px; }
+      .productitem--title { font-size: 16px; font-weight: 600; margin: 0 0 8px 0; line-height: 1.3; }
+      .productitem--title a { color: #333; text-decoration: none; }
+      .productitem--vendor { font-size: 14px; color: #666; margin-bottom: 8px; }
+      .productitem--vendor a { color: #666; text-decoration: none; }
+      .price { margin-bottom: 12px; }
+      .price__current { font-size: 18px; font-weight: 600; color: #333; }
+      .price__compare-at { font-size: 14px; color: #999; text-decoration: line-through; }
+      
+      /* Product Recommendations */
+      .product-recommendations--container { padding: 40px 20px; }
+      .product-recommendations--title { font-size: 24px; font-weight: 600; margin-bottom: 20px; text-align: center; }
+      .product-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+      
+      /* Hero/Slideshow */
       .slideshow { position: relative; width: 100%; overflow: hidden; }
       .slideshow-slide { position: relative; width: 100%; }
       .slideshow-slide__image { width: 100%; height: auto; display: block; }
       
-      /* Prevent CLS - promo mosaic */
+      /* Skeleton screens for perceived performance */
+      .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+      @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+      .skeleton-image { height: 300px; border-radius: 8px; }
+      .skeleton-text { height: 16px; margin: 8px 0; border-radius: 4px; width: 80%; }
+      .skeleton-text.short { width: 60%; }
+      
+      /* Prevent CLS */
       .promo-mosaic--inner { display: grid; gap: 10px; }
       .promo-block { aspect-ratio: 1; background-size: cover; background-position: center; }
       
@@ -123,18 +173,14 @@
       * { box-sizing: border-box; }
       
       /* Fix dropdown and overlay issues */
-      .navmenu-link:hover {
-        text-decoration: none;
-      }
+      .navmenu-link:hover { text-decoration: none; }
+      .navmenu-depth-2 { pointer-events: auto; }
+      .overlay, .modal-overlay, .dropdown-overlay { display: none !important; }
       
-      .navmenu-depth-2 {
-        pointer-events: auto;
-      }
-      
-      /* Remove any overlays */
-      .overlay, .modal-overlay, .dropdown-overlay {
-        display: none !important;
-      }
+      /* Loading states */
+      .loading { opacity: 0.6; pointer-events: none; }
+      .loading::after { content: ''; position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; border: 2px solid #f3f3f3; border-top: 2px solid #333; border-radius: 50%; animation: spin 1s linear infinite; }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
     
     
@@ -1493,6 +1539,85 @@
       })();
     </script>
     
+    {%- comment -%}Performance optimization for instant page load{%- endcomment -%}
+    <script>
+      // Instant page load optimization
+      (function() {
+        'use strict';
+        
+        // Mark page as loaded immediately for perceived performance
+        document.addEventListener('DOMContentLoaded', function() {
+          document.body.classList.add('loaded');
+          
+          // Load below-fold content after critical content
+          setTimeout(function() {
+            var belowFold = document.querySelectorAll('.below-fold');
+            belowFold.forEach(function(el) {
+              el.classList.add('loaded');
+            });
+          }, 100);
+        });
+        
+        // Optimize image loading with intersection observer
+        if ('IntersectionObserver' in window) {
+          var imageObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                var img = entry.target;
+                if (img.dataset.src && !img.src) {
+                  img.src = img.dataset.src;
+                  img.classList.remove('lazy');
+                  imageObserver.unobserve(img);
+                }
+              }
+            });
+          }, {
+            rootMargin: '50px 0px',
+            threshold: 0.01
+          });
+          
+          // Observe all lazy images
+          document.addEventListener('DOMContentLoaded', function() {
+            var lazyImages = document.querySelectorAll('img[data-src]');
+            lazyImages.forEach(function(img) {
+              imageObserver.observe(img);
+            });
+          });
+        }
+        
+        // Preload critical resources
+        function preloadResource(url, type) {
+          var link = document.createElement('link');
+          link.rel = 'preload';
+          link.href = url;
+          link.as = type;
+          if (type === 'font') link.crossOrigin = 'anonymous';
+          if (type === 'script') link.crossOrigin = 'anonymous';
+          document.head.appendChild(link);
+        }
+        
+        // Performance monitoring
+        if ('performance' in window && 'PerformanceObserver' in window) {
+          var perfObserver = new PerformanceObserver(function(list) {
+            list.getEntries().forEach(function(entry) {
+              if (entry.entryType === 'largest-contentful-paint') {
+                console.log('LCP:', entry.startTime);
+              }
+              if (entry.entryType === 'first-input') {
+                console.log('FID:', entry.processingStart - entry.startTime);
+              }
+            });
+          });
+          
+          try {
+            perfObserver.observe({ entryTypes: ['largest-contentful-paint', 'first-input'] });
+          } catch(e) {
+            // PerformanceObserver not supported
+          }
+        }
+      })();
+    </script>
+
     {% comment %} Empire.js execution chunking to prevent main-thread blocking {% endcomment %}
     <script>
       // Split empire.js into smaller execution chunks using requestAnimationFrame
