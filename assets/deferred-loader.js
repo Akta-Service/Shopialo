@@ -17,7 +17,7 @@
   console.log('📱 [Deferred Loader] Device detected:', deviceType);
   
   // Configuration
-  var DELAY_AFTER_LOAD = 3000; // 3 seconds after page load
+  var DELAY_AFTER_LOAD = 10000; // 3 seconds after page load
   var pageLoadComplete = false;
   var deferredResources = {
     scripts: [],
