@@ -57,17 +57,25 @@
     
     <script>
       // Hide skeleton and show products when loaded
-      document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(function() {
-          var skeleton = document.getElementById('skeleton-{{ section.id }}');
-          var products = document.getElementById('products-{{ section.id }}');
-          
-          if (skeleton && products) {
-            skeleton.style.display = 'none';
-            products.style.display = 'grid';
-          }
-        }, 800); // Small delay for perceived performance
-      });
+      function showRecommendations() {
+        var skeleton = document.getElementById('skeleton-{{ section.id }}');
+        var products = document.getElementById('products-{{ section.id }}');
+        
+        if (skeleton && products) {
+          skeleton.style.display = 'none';
+          products.style.display = 'grid';
+        }
+      }
+      
+      // Try multiple methods to ensure products show
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', showRecommendations);
+      } else {
+        setTimeout(showRecommendations, 500);
+      }
+      
+      // Fallback - ensure products show after 2 seconds
+      setTimeout(showRecommendations, 2000);
     </script>
     {% endif %}
   </section>
