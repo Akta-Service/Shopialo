@@ -9,7 +9,7 @@
   
   .site-header-logo {
     position: relative;
-    z-index: 100;
+    z-index: 999;
     flex-shrink: 0;
     min-width: 200px;
   }
