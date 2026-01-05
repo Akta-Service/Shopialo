@@ -15,8 +15,12 @@
     <link rel="dns-prefetch" href="https://www.google-analytics.com">
     
     {%- comment -%}Optimized font loading with font-display: swap{%- endcomment -%}
-    <link rel="preload" href="{{ settings.type_menu | font_url }}" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{{ settings.type_body | font_url }}" as="font" type="font/woff2" crossorigin>
+    {% if settings.type_menu != blank %}
+      <link rel="preload" href="{{ settings.type_menu | font_url }}" as="font" type="font/woff2" crossorigin>
+    {% endif %}
+    {% if settings.type_body != blank %}
+      <link rel="preload" href="{{ settings.type_body | font_url }}" as="font" type="font/woff2" crossorigin>
+    {% endif %}
     <link rel="preload" as="style" href="{{ 'fonts.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
       <link rel="stylesheet" href="{{ 'fonts.css' | asset_url }}">
@@ -92,7 +96,7 @@
 
     {%- comment -%}Mobile-first resource hints for faster LCP{%- endcomment -%}
     <link rel="preload" as="style" href="{{ 'theme.css' | asset_url }}">
-    <link rel="preload" as="script" href="{{ 'swiper-bundle.min.js' | asset_url }}" crossorigin>
+    <link rel="preload" as="script" href="{{ 'swiper-bundle.min.js' | asset_url }}">
     
     {%- comment -%}Preload LCP image for mobile (slideshow banner){%- endcomment -%}
     {% if template.name == 'index' %}
@@ -1541,22 +1545,34 @@
     
     {%- comment -%}Performance optimization for instant page load{%- endcomment -%}
     <script>
-      // Instant page load optimization
+      // Instant page load optimization - STOP LOADING IMMEDIATELY
       (function() {
         'use strict';
         
         // Mark page as loaded immediately for perceived performance
-        document.addEventListener('DOMContentLoaded', function() {
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.add('loaded');
+            
+            // Load below-fold content after critical content
+            setTimeout(function() {
+              var belowFold = document.querySelectorAll('.below-fold');
+              belowFold.forEach(function(el) {
+                el.classList.add('loaded');
+              });
+            }, 100);
+          });
+        } else {
           document.body.classList.add('loaded');
-          
-          // Load below-fold content after critical content
-          setTimeout(function() {
-            var belowFold = document.querySelectorAll('.below-fold');
-            belowFold.forEach(function(el) {
-              el.classList.add('loaded');
-            });
-          }, 100);
-        });
+        }
+        
+        // Stop page loading indicator immediately
+        if (window.performance && window.performance.timing) {
+          var loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+          if (loadTime > 1000) {
+            window.stop(); // Stop loading if taking too long
+          }
+        }
         
         // Optimize image loading with intersection observer
         if ('IntersectionObserver' in window) {
