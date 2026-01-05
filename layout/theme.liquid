@@ -87,54 +87,69 @@
 
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     
-    {%- comment -%}CRITICAL CSS - Hero section loads instantly{%- endcomment -%}
+    {%- comment -%}CRITICAL CSS - Inline for FCP < 1s{%- endcomment -%}
     <style>
-      /* Instant load essentials */
-      body { margin: 0; opacity: 1; background: #fff; }
+      /* OPTIMIZATION: Instant load essentials for FCP */
+      body { margin: 0; opacity: 1; background: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
       
-      /* Header - critical for <1s load */
-      .site-header { position: relative; background: #fff; z-index: 100; }
+      /* OPTIMIZATION: Header - critical for <1s load */
+      .site-header { position: relative; background: #fff; z-index: 999; }
       .site-header-main { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; }
+      .site-logo-image { max-width: 200px; height: auto; }
       
-      /* Mobile header fix */
+      /* OPTIMIZATION: Mobile header */
       @media (max-width: 768px) {
         .site-header-main-content .live-search-form { display: block; }
+        .site-logo-image { max-width: 150px; }
       }
       
-      /* Hero/Slideshow - critical for <1s load */
+      /* OPTIMIZATION: Product page critical layout */
+      .product--outer { display: flex; gap: 20px; align-items: start; }
+      .product-gallery { flex: 1; position: sticky; top: 85px; }
+      .product-main { flex: 1; }
+      
+      @media (max-width: 768px) {
+        .product--outer { flex-direction: column; }
+        .product-gallery { position: static; }
+      }
+      
+      /* OPTIMIZATION: Product gallery placeholder to prevent CLS */
+      .quick-view-product-image { width: 100%; aspect-ratio: 2/3; background: #f5f5f5; position: relative; }
+      .quick-view-product-image img { width: 100%; height: 100%; object-fit: contain; }
+      
+      /* OPTIMIZATION: Hero/Slideshow - critical for <1s load */
       .slideshow { position: relative; width: 100%; overflow: hidden; }
       .slideshow-slide { position: relative; width: 100%; }
       .slideshow-slide__image { width: 100%; height: auto; display: block; }
       
-      /* Prevent CLS - promo mosaic */
+      /* OPTIMIZATION: Prevent CLS - promo mosaic */
       .promo-mosaic--inner { display: grid; gap: 10px; }
       .promo-block { aspect-ratio: 1; background-size: cover; background-position: center; }
       
-      /* Lazy sections - prevent CLS */
+      /* OPTIMIZATION: Product recommendations placeholder */
+      .product-recommendations--container { padding: 40px 20px; min-height: 400px; }
+      .product-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+      
+      /* OPTIMIZATION: Lazy sections - prevent CLS */
       .lazy-section { min-height: 300px; opacity: 0; transition: opacity 0.3s; }
       .lazy-section.loaded { opacity: 1; }
       
-      /* Hide below-fold until lazy loaded */
-      .below-fold { visibility: hidden; }
-      .below-fold.loaded { visibility: visible; }
+      /* OPTIMIZATION: Hide below-fold until lazy loaded */
+      .below-fold { visibility: hidden; opacity: 0; transition: opacity 0.5s ease-in; }
+      .below-fold.loaded { visibility: visible; opacity: 1; }
       
-      /* General */
+      /* OPTIMIZATION: Skeleton screens for perceived performance */
+      .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+      @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+      
+      /* OPTIMIZATION: General */
       img { max-width: 100%; height: auto; }
       * { box-sizing: border-box; }
       
-      /* Fix dropdown and overlay issues */
-      .navmenu-link:hover {
-        text-decoration: none;
-      }
-      
-      .navmenu-depth-2 {
-        pointer-events: auto;
-      }
-      
-      /* Remove any overlays */
-      .overlay, .modal-overlay, .dropdown-overlay {
-        display: none !important;
-      }
+      /* OPTIMIZATION: Fix dropdown and overlay issues */
+      .navmenu-link:hover { text-decoration: none; }
+      .navmenu-depth-2 { pointer-events: auto; }
+      .overlay, .modal-overlay, .dropdown-overlay { display: none !important; }
     </style>
     
     
@@ -683,6 +698,11 @@
         }
       })();
     </script>
+    
+    {%- comment -%}OPTIMIZATION: Product Page Progressive Loader - SetInterval based{%- endcomment -%}
+    {% if template.name == 'product' %}
+      <script src="{{ 'product-page-progressive-loader.js' | asset_url }}" defer></script>
+    {% endif %}
     
     {%- comment -%}Performance Testing (Development only){%- endcomment -%}
     {% if shopify_device == 'desktop' or request.host contains 'shopifypreview.com' %}
