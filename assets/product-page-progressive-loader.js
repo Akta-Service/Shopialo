@@ -9,7 +9,7 @@
   
   /* OPTIMIZATION: Configuration for progressive loading */
   const CONFIG = {
-    intervalDelay: 500, // 500ms between batches for fast JS/CSS loading
+    intervalDelay: 3000, // 3 seconds between batches
     isMobile: window.innerWidth <= 768,
     isProductPage: document.body.classList.contains('template-product')
   };
@@ -455,11 +455,13 @@
     }, CONFIG.intervalDelay);
   }
   
-  /* OPTIMIZATION: Initialize on window load - prioritize JS/CSS first */
+  /* OPTIMIZATION: Initialize 3 seconds after window load completes */
   if (CONFIG.isProductPage) {
     window.addEventListener('load', function() {
-      // Start immediately after load for fastest JS/CSS loading
-      startProgressiveLoading();
+      // Wait 3 seconds after page fully loads before starting batch loading
+      setTimeout(function() {
+        startProgressiveLoading();
+      }, 3000);
     });
   }
   
