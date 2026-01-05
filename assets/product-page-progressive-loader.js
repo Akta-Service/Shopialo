@@ -97,26 +97,56 @@
     logProgress('Batch 2 loaded:', batch2Items.join(', '));
   }
   
-  /* OPTIMIZATION: Batch 3 - Product gallery images and thumbnails */
+  /* OPTIMIZATION: Batch 3 - Setup IntersectionObserver for product gallery images with skeleton replacement */
   function loadBatch3() {
     if (batchesLoaded.batch3) return;
     batchesLoaded.batch3 = true;
     
     const batch3Items = [];
     
-    // Load product gallery thumbnails
-    const thumbnails = document.querySelectorAll('#thumbSwiper img[loading="lazy"]');
-    thumbnails.forEach((img, index) => {
-      img.loading = 'eager';
-      if (index === 0) batch3Items.push(`Images: ${thumbnails.length} thumbnails`);
+    // Setup IntersectionObserver for lazy image loading with 200px preload margin
+    const imageObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          const skeleton = img.previousElementSibling;
+          
+          // Load image from data-lazy-src
+          if (img.dataset.lazySrc) {
+            img.src = img.dataset.lazySrc;
+            if (img.dataset.lazySrcset) {
+              img.srcset = img.dataset.lazySrcset;
+            }
+            
+            // On image load, hide skeleton and show image
+            img.onload = function() {
+              if (skeleton && skeleton.classList.contains('skeleton-image') || skeleton.classList.contains('skeleton-thumbnail')) {
+                skeleton.style.display = 'none';
+              }
+              img.style.display = 'block';
+              img.classList.add('loaded', 'fade-in');
+              logProgress('Executing image load for gallery via observer');
+            };
+            
+            imageObserver.unobserve(img);
+          }
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '200px',
+      threshold: 0.01
     });
     
-    // Load main gallery images (except first which is already eager)
-    const mainImages = document.querySelectorAll('#mainSwiper img[loading="lazy"]');
-    mainImages.forEach((img, index) => {
-      img.loading = 'eager';
-      if (index === 0) batch3Items.push(`Images: ${mainImages.length} main images`);
+    // Observe all gallery images with data-lazy-src
+    const galleryImages = document.querySelectorAll('[data-lazy-src]');
+    galleryImages.forEach(img => {
+      imageObserver.observe(img);
     });
+    
+    if (galleryImages.length > 0) {
+      batch3Items.push(`Observer setup: ${galleryImages.length} gallery images`);
+    }
     
     // Initialize Swiper if loaded
     if (window.Swiper && typeof window.initProductSwiper === 'function') {
@@ -124,28 +154,64 @@
       batch3Items.push('Function: initSwiper');
     }
     
+    // Store observer globally for Batch 4
+    window.productImageObserver = imageObserver;
+    
     logProgress('Batch 3 loaded:', batch3Items.join(', '));
   }
   
-  /* OPTIMIZATION: Batch 4 - Product recommendations lazy loading */
+  /* OPTIMIZATION: Batch 4 - Setup IntersectionObserver for recommendations with skeleton replacement */
   function loadBatch4() {
     if (batchesLoaded.batch4) return;
     batchesLoaded.batch4 = true;
     
     const batch4Items = [];
     
-    // Load product recommendations images with lazy loading
-    const recommendationsSection = document.querySelector('[data-product-recommendations]');
+    // Setup IntersectionObserver for recommendations section
+    const recommendationsSection = document.querySelector('[data-observer-section="recommendations"]');
+    
     if (recommendationsSection) {
-      // Load recommendation images
-      const recImages = recommendationsSection.querySelectorAll('img[loading="lazy"]');
-      recImages.forEach(img => {
-        img.loading = 'eager';
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Hide skeleton grid
+            const skeletonGrid = entry.target.querySelector('[data-skeleton-grid]');
+            const productRow = entry.target.querySelector('[data-product-row]');
+            
+            if (skeletonGrid && productRow) {
+              skeletonGrid.style.display = 'none';
+              productRow.style.display = 'grid';
+              productRow.classList.add('fade-in');
+              
+              // Load recommendation images if they have data-lazy-src
+              const recImages = productRow.querySelectorAll('img[data-lazy-src]');
+              recImages.forEach(img => {
+                if (img.dataset.lazySrc) {
+                  img.src = img.dataset.lazySrc;
+                  if (img.dataset.lazySrcset) {
+                    img.srcset = img.dataset.lazySrcset;
+                  }
+                  img.onload = function() {
+                    img.classList.add('loaded', 'fade-in');
+                  };
+                }
+              });
+              
+              logProgress('Executing image load for recommendations via observer');
+              batch4Items.push(`Recommendations: ${recImages.length} products`);
+            }
+            
+            sectionObserver.unobserve(entry.target);
+          }
+        });
+      }, {
+        root: null,
+        rootMargin: '200px',
+        threshold: 0.01
       });
       
-      if (recImages.length > 0) {
-        batch4Items.push(`Recommendations: ${recImages.length} products`);
-      }
+      sectionObserver.observe(recommendationsSection);
+      batch4Items.push('Observer setup: recommendations section');
     }
     
     logProgress('Batch 4 loaded:', batch4Items.join(', '));
