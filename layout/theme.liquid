@@ -85,6 +85,9 @@
 
     {{ content_for_header }}
 
+    {%- comment -%}Deferred Resource Loader - Load header instantly, defer everything else by 3 seconds{%- endcomment -%}
+    <script src="{{ 'deferred-loader.js' | asset_url }}"></script>
+
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     
     {%- comment -%}CRITICAL CSS - Hero section loads instantly{%- endcomment -%}
