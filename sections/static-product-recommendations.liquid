@@ -17,7 +17,7 @@
   </script>
 
   <section
-    class="product-section--container product-row--container product-recommendations--container"
+    class="product-section--container product-row--container product-recommendations--container below-fold"
     data-html
     data-product-recommendations
     >
@@ -26,8 +26,25 @@
         {{ section.settings.product_recommendations_heading }}
       </h2>
 
+    <!-- Skeleton loading for instant perceived performance -->
+    <div class="product-section--content product-row skeleton-container" id="skeleton-{{ section.id }}" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+      {% for i in (1..5) %}
+        <div class="skeleton-card">
+          <div class="skeleton skeleton-image" style="height: 250px; border-radius: 8px;"></div>
+          <div style="padding: 15px;">
+            <div class="skeleton skeleton-text" style="height: 16px; margin-bottom: 8px;"></div>
+            <div class="skeleton skeleton-text short" style="height: 14px; margin-bottom: 12px;"></div>
+            <div class="skeleton skeleton-text" style="height: 18px; margin-bottom: 12px;"></div>
+            <div class="skeleton skeleton-text short" style="height: 20px; width: 120px;"></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
     <div
       class="product-section--content product-row"
+      id="products-{{ section.id }}"
+      style="display: none;"
       data-product-row
       >
       {% for product in recommendations.products limit: product_limit %}
@@ -37,6 +54,21 @@
         %}
       {% endfor %}
     </div>
+    
+    <script>
+      // Hide skeleton and show products when loaded
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+          var skeleton = document.getElementById('skeleton-{{ section.id }}');
+          var products = document.getElementById('products-{{ section.id }}');
+          
+          if (skeleton && products) {
+            skeleton.style.display = 'none';
+            products.style.display = 'grid';
+          }
+        }, 800); // Small delay for perceived performance
+      });
+    </script>
     {% endif %}
   </section>
 
