@@ -14,17 +14,17 @@
      navigator.connection.effectiveType === '2g' || 
      navigator.connection.effectiveType === '3g');
   
-  // Performance budget - more aggressive on mobile
+  // Performance budget - ultra-aggressive for sub-2s load
   var BUDGET = {
     mobile: {
-      scriptDelay: isSlowConnection ? 8000 : 3000,
-      imageDelay: 2000,
-      animationDelay: 4000
+      scriptDelay: isSlowConnection ? 15000 : 5000,
+      imageDelay: 1000,
+      animationDelay: 6000
     },
     desktop: {
-      scriptDelay: 1000,
-      imageDelay: 500,
-      animationDelay: 2000
+      scriptDelay: 2000,
+      imageDelay: 800,
+      animationDelay: 3000
     }
   };
   
