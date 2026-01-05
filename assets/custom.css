@@ -543,3 +543,8 @@ button {
     text-rendering: optimizeSpeed;
   }
 }
+
+
+.site-header{
+  z-index: 999;
+}
