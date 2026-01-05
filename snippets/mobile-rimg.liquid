@@ -329,14 +329,8 @@
   {% endif %}
 
   <img
-    {% if rimg_format == '' %}
-      src="{{ img | img_url: rimg_size, crop: crop }}"
-    {% else %}
-      src="{{ img | img_url: rimg_size, crop: crop, format: rimg_format }}"
-    {% endif %}
-    alt="{{ rimg_alt }}"
-
     {% if lazy %}
+      src="{{ rimg_placeholder }}"
       loading="lazy"
       data-rimg="lazy"
       data-rimg-scale="{{ rimg_scale }}"
@@ -346,9 +340,15 @@
       {% if placeholder %}data-rimg-placeholder="{{ placeholder }}"{% endif %}
       srcset="{{ rimg_placeholder }}"
     {% else %}
+      {% if rimg_format == '' %}
+        src="{{ img | img_url: rimg_size, crop: crop }}"
+      {% else %}
+        src="{{ img | img_url: rimg_size, crop: crop, format: rimg_format }}"
+      {% endif %}
       data-rimg
       srcset="{{ rimg_density_srcset }}"
     {% endif %}
+    alt="{{ rimg_alt }}"
 
     {% if class != blank %}class="{{ class }}"{% endif %}
     {% if style != blank %}style="{{ style }}"{% endif %}
