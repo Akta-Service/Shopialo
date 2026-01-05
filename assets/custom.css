@@ -282,11 +282,14 @@ body:not(.loaded) {
   contain: layout style paint;
 }
 
-.productitem,
-.productitem--outer {
-  contain: layout style paint;
-  content-visibility: auto;
-  contain-intrinsic-size: 0 400px;
+/* Desktop only - prevent mobile content hiding */
+@media (min-width: 769px) {
+  .productitem,
+  .productitem--outer {
+    contain: layout style paint;
+    content-visibility: auto;
+    contain-intrinsic-size: 0 400px;
+  }
 }
 
 /* Optimize product images for faster rendering - Desktop only */
@@ -385,7 +388,7 @@ button {
   }
   
   .productitem {
-    contain: strict;
+    /* contain: strict; - REMOVED: hides product titles and info on mobile */
     content-visibility: auto;
     contain-intrinsic-size: 0 320px;
   }
