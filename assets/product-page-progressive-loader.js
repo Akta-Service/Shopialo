@@ -104,24 +104,36 @@
     
     const batch3Items = [];
     
-    // Load product gallery thumbnails
-    const thumbnails = document.querySelectorAll('#thumbSwiper img[loading="lazy"]');
-    thumbnails.forEach((img, index) => {
+    // Load all deferred images (thumbnails and main images)
+    const deferredImages = document.querySelectorAll('.deferred-image');
+    deferredImages.forEach((img) => {
+      const dataSrc = img.getAttribute('data-src');
+      const dataSrcset = img.getAttribute('data-srcset');
+      
+      if (dataSrc) {
+        img.setAttribute('src', dataSrc);
+        img.removeAttribute('data-src');
+      }
+      
+      if (dataSrcset) {
+        img.setAttribute('srcset', dataSrcset);
+        img.removeAttribute('data-srcset');
+      }
+      
       img.loading = 'eager';
-      if (index === 0) batch3Items.push(`Images: ${thumbnails.length} thumbnails`);
+      img.classList.remove('deferred-image');
     });
     
-    // Load main gallery images (except first which is already eager)
-    const mainImages = document.querySelectorAll('#mainSwiper img[loading="lazy"]');
-    mainImages.forEach((img, index) => {
-      img.loading = 'eager';
-      if (index === 0) batch3Items.push(`Images: ${mainImages.length} main images`);
-    });
+    if (deferredImages.length > 0) {
+      batch3Items.push(`Images: ${deferredImages.length} product images`);
+    }
     
-    // Initialize Swiper if loaded
+    // Initialize Swiper after images are loaded
     if (window.Swiper && typeof window.initProductSwiper === 'function') {
-      window.initProductSwiper(document);
-      batch3Items.push('Function: initSwiper');
+      setTimeout(() => {
+        window.initProductSwiper(document);
+        batch3Items.push('Function: initSwiper');
+      }, 100);
     }
     
     logProgress('Batch 3 loaded:', batch3Items.join(', '));
@@ -134,12 +146,24 @@
     
     const batch4Items = [];
     
-    // Load product recommendations images with lazy loading
+    // Load product recommendations images
     const recommendationsSection = document.querySelector('[data-product-recommendations]');
     if (recommendationsSection) {
-      // Load recommendation images
-      const recImages = recommendationsSection.querySelectorAll('img[loading="lazy"]');
+      const recImages = recommendationsSection.querySelectorAll('img');
       recImages.forEach(img => {
+        const dataSrc = img.getAttribute('data-src');
+        const dataSrcset = img.getAttribute('data-srcset');
+        
+        if (dataSrc) {
+          img.setAttribute('src', dataSrc);
+          img.removeAttribute('data-src');
+        }
+        
+        if (dataSrcset) {
+          img.setAttribute('srcset', dataSrcset);
+          img.removeAttribute('data-srcset');
+        }
+        
         img.loading = 'eager';
       });
       
