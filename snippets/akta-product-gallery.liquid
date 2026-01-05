@@ -3,9 +3,15 @@
 <link rel="preload" href="{{ 'swiper-bundle.min.css' | asset_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="{{ 'swiper-bundle.min.css' | asset_url }}"></noscript>
 
+<!-- Skeleton for product gallery -->
+<div class="product-gallery-skeleton" id="gallery-skeleton" style="display: flex; gap: 1rem; padding: 20px;">
+  <div class="skeleton skeleton-image" style="width: 80px; height: 400px; border-radius: 8px;"></div>
+  <div class="skeleton skeleton-image" style="flex: 1; height: 400px; border-radius: 8px;"></div>
+</div>
+
 <style>
   .product-gallery {
-    display: flex;
+    display: none; /* Hidden initially, shown by JavaScript */
     gap: 1rem;
   }
 
@@ -267,3 +273,28 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Hide skeleton and show gallery when loaded
+  function showGallery() {
+    var skeleton = document.getElementById('gallery-skeleton');
+    var gallery = document.querySelector('.product-gallery');
+    
+    if (skeleton && gallery) {
+      skeleton.style.display = 'none';
+      gallery.style.display = 'flex';
+    }
+  }
+  
+  // Show gallery after images load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(showGallery, 1000);
+    });
+  } else {
+    setTimeout(showGallery, 500);
+  }
+  
+  // Fallback
+  setTimeout(showGallery, 3000);
+</script>
