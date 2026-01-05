@@ -382,17 +382,6 @@ button {
     height: auto;
   }
   
-  /* Reduce mobile layout complexity - AGGRESSIVE */
-  .productgrid {
-    contain: strict;
-  }
-  
-  .productitem {
-    /* contain: strict; - REMOVED: hides product titles and info on mobile */
-    content-visibility: auto;
-    contain-intrinsic-size: 0 320px;
-  }
-  
   /* Mobile header optimization - NO containment to preserve all elements */
   .site-header,
   .site-header-main,
@@ -403,7 +392,7 @@ button {
   
   /* Reduce mobile footer complexity */
   .site-footer {
-    contain: strict;
+    contain: layout style;
     content-visibility: auto;
     contain-intrinsic-size: 0 200px;
   }
@@ -418,7 +407,7 @@ button {
   .modal,
   .drawer,
   .quickshop {
-    contain: strict;
+    contain: layout style;
     transform: translateZ(0);
   }
   
@@ -454,19 +443,18 @@ button {
     contain: layout style;
   }
   
-  /* Additional mobile containment for Style & Layout reduction */
-  .home-section,
-  .promo-mosaic,
-  .promo-block {
-    contain: strict;
-    content-visibility: auto;
+  /* Optimize mobile text rendering */
+  body,
+  p,
+  h1, h2, h3, h4, h5, h6 {
+    text-rendering: optimizeSpeed;
   }
   
   /* Optimize mobile collections and lists */
   .collection-list,
   .collection-item,
   .featured-collection {
-    contain: strict;
+    contain: layout style;
     content-visibility: auto;
   }
   
@@ -475,7 +463,7 @@ button {
   select,
   textarea,
   button {
-    contain: strict;
+    contain: layout style;
   }
   
   /* Optimize mobile animations - EXTREME for Rendering reduction */
@@ -513,7 +501,7 @@ button {
   .productitem--badge,
   .product-badge,
   .badge {
-    contain: strict;
+    contain: layout style paint;
     transform: translateZ(0);
   }
   
@@ -523,7 +511,7 @@ button {
   [id*="autoketing"],
   [class*="smile-"] {
     content-visibility: auto;
-    contain: strict;
+    contain: layout style paint;
     contain-intrinsic-size: 0 100px;
   }
   
@@ -537,13 +525,7 @@ button {
   /* Mobile collection/grid optimization */
   .collection-main,
   .productgrid--outer {
-    contain: strict;
-  }
-  
-  /* Optimize mobile text rendering */
-  body,
-  p,
-  h1, h2, h3, h4, h5, h6 {
+    contain: layout style paint;
     text-rendering: optimizeSpeed;
   }
 }
