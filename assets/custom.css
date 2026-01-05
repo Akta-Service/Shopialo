@@ -289,10 +289,12 @@ body:not(.loaded) {
   contain-intrinsic-size: 0 400px;
 }
 
-/* Optimize product images for faster rendering */
-.productitem--image,
-.productitem--image-link {
-  contain: layout style paint;
+/* Optimize product images for faster rendering - Desktop only */
+@media (min-width: 769px) {
+  .productitem--image,
+  .productitem--image-link {
+    contain: layout style paint;
+  }
 }
 
 /* Reduce reflow triggers */
@@ -435,7 +437,6 @@ button {
   /* Reduce mobile rendering complexity */
   .productitem--image,
   .productitem--image-link {
-    contain: strict;
     transform: translateZ(0);
   }
   
