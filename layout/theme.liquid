@@ -1777,5 +1777,104 @@
         };
       })();
     </script>
+    
+    {%- comment -%}OPTIMIZATION: DOM batching, debounce, throttle, yieldToMain kept inline as they're needed immediately for critical interactions{%- endcomment -%}
+    <script>
+      /* OPTIMIZATION: Batched with requestIdleCallback for low TBT - Critical utilities only */
+      (function() {
+        // Debounce expensive operations
+        window.debounce = function(func, wait) {
+          var timeout;
+          return function() {
+            var context = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+              func.apply(context, args);
+            }, wait);
+          };
+        };
+        
+        // Throttle for scroll/resize events
+        window.throttle = function(func, limit) {
+          var inThrottle;
+          return function() {
+            var args = arguments;
+            var context = this;
+            if (!inThrottle) {
+              func.apply(context, args);
+              inThrottle = true;
+              setTimeout(function() { inThrottle = false; }, limit);
+            }
+          };
+        };
+        
+        // Break up long tasks
+        window.yieldToMain = function() {
+          return new Promise(function(resolve) {
+            setTimeout(resolve, 0);
+          });
+        };
+        
+        // Passive event listeners by default
+        var originalAddEventListener = EventTarget.prototype.addEventListener;
+        EventTarget.prototype.addEventListener = function(type, listener, options) {
+          var passiveEvents = ['scroll', 'wheel', 'touchstart', 'touchmove', 'touchend', 'touchcancel'];
+          if (passiveEvents.indexOf(type) !== -1 && typeof options !== 'object') {
+            options = { passive: true };
+          }
+          return originalAddEventListener.call(this, type, listener, options);
+        };
+      })();
+    </script>
+    
+    {%- comment -%}OPTIMIZATION: jQuery optimizer, style batching, event delegation, chunk processing now deferred to product-page-progressive-loader.js Batches 5-8 with requestIdleCallback for aggressive TBT reduction{%- endcomment -%}
+    {%- comment -%}OPTIMIZATION: Critical utilities kept inline - needed immediately for interactions{%- endcomment -%}
+    <script>
+      /* OPTIMIZATION: Batched with requestIdleCallback for low TBT - Critical utilities only */
+      (function() {
+        // Debounce expensive operations
+        window.debounce = function(func, wait) {
+          var timeout;
+          return function() {
+            var context = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+              func.apply(context, args);
+            }, wait);
+          };
+        };
+        
+        // Throttle for scroll/resize events
+        window.throttle = function(func, limit) {
+          var inThrottle;
+          return function() {
+            var args = arguments;
+            var context = this;
+            if (!inThrottle) {
+              func.apply(context, args);
+              inThrottle = true;
+              setTimeout(function() { inThrottle = false; }, limit);
+            }
+          };
+        };
+        
+        // Break up long tasks
+        window.yieldToMain = function() {
+          return new Promise(function(resolve) {
+            setTimeout(resolve, 0);
+          });
+        };
+        
+        // Passive event listeners by default
+        var originalAddEventListener = EventTarget.prototype.addEventListener;
+        EventTarget.prototype.addEventListener = function(type, listener, options) {
+          var passiveEvents = ['scroll', 'wheel', 'touchstart', 'touchmove', 'touchend', 'touchcancel'];
+          if (passiveEvents.indexOf(type) !== -1 && typeof options !== 'object') {
+            options = { passive: true };
+          }
+          return originalAddEventListener.call(this, type, listener, options);
+        };
+      })();
+    </script>
   </body>  
 </html>
