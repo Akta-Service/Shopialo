@@ -21,7 +21,11 @@
     batch1: false,
     batch2: false,
     batch3: false,
-    batch4: false
+    batch4: false,
+    batch5: false,
+    batch6: false,
+    batch7: false,
+    batch8: false
   };
   
   /* OPTIMIZATION: Console logging for debugging */
@@ -145,6 +149,216 @@
     }
     
     logProgress('Batch 4 loaded:', batch4Items.join(', '));
+  }
+  
+  /* OPTIMIZATION: Batch 5 - jQuery optimizer with requestIdleCallback for low TBT */
+  function loadBatch5() {
+    if (batchesLoaded.batch5) return;
+    batchesLoaded.batch5 = true;
+    
+    const batch5Items = [];
+    
+    const executeJQueryOptimizer = function() {
+      if (typeof jQuery === 'undefined') return;
+      
+      // Cache jQuery selectors
+      const selectorCache = {};
+      const originalFind = jQuery.fn.find;
+      jQuery.fn.find = function(selector) {
+        if (typeof selector === 'string') {
+          const cacheKey = this.selector + ' ' + selector;
+          if (!selectorCache[cacheKey]) {
+            selectorCache[cacheKey] = originalFind.call(this, selector);
+          }
+          return selectorCache[cacheKey];
+        }
+        return originalFind.call(this, selector);
+      };
+      
+      // Optimize jQuery animations to use CSS when possible
+      const originalAnimate = jQuery.fn.animate;
+      jQuery.fn.animate = function(properties, duration, easing, complete) {
+        let canUseCSS = true;
+        for (const prop in properties) {
+          if (!['opacity', 'left', 'top', 'right', 'bottom'].includes(prop)) {
+            canUseCSS = false;
+            break;
+          }
+        }
+        
+        if (canUseCSS && duration < 1000) {
+          this.css('transition', 'all ' + (duration || 400) + 'ms ease');
+          this.css(properties);
+          if (complete) {
+            setTimeout(complete.bind(this[0]), duration || 400);
+          }
+          return this;
+        }
+        
+        return originalAnimate.call(this, properties, duration, easing, complete);
+      };
+      
+      batch5Items.push('jQuery optimizer: selector cache, CSS animations');
+    };
+    
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(executeJQueryOptimizer, { timeout: 3000 });
+    } else {
+      setTimeout(executeJQueryOptimizer, 0);
+    }
+    
+    logProgress('Batch 5 loaded:', batch5Items.join(', '));
+  }
+  
+  /* OPTIMIZATION: Batch 6 - Style batching and object pooling with requestIdleCallback */
+  function loadBatch6() {
+    if (batchesLoaded.batch6) return;
+    batchesLoaded.batch6 = true;
+    
+    const batch6Items = [];
+    
+    const executeStyleBatching = function() {
+      // Reduce reflows by batching style changes
+      const styleQueue = [];
+      let styleFlushScheduled = false;
+      
+      window.queueStyleChange = function(element, styles) {
+        styleQueue.push({ element: element, styles: styles });
+        
+        if (!styleFlushScheduled) {
+          styleFlushScheduled = true;
+          requestAnimationFrame(function() {
+            styleQueue.forEach(function(item) {
+              Object.keys(item.styles).forEach(function(key) {
+                item.element.style[key] = item.styles[key];
+              });
+            });
+            styleQueue.length = 0;
+            styleFlushScheduled = false;
+          });
+        }
+      };
+      
+      // Reduce garbage collection by reusing objects
+      const objectPool = [];
+      window.getPooledObject = function() {
+        return objectPool.pop() || {};
+      };
+      
+      window.releasePooledObject = function(obj) {
+        for (const key in obj) {
+          delete obj[key];
+        }
+        if (objectPool.length < 50) {
+          objectPool.push(obj);
+        }
+      };
+      
+      batch6Items.push('Style batching, Object pooling');
+    };
+    
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(executeStyleBatching, { timeout: 3000 });
+    } else {
+      setTimeout(executeStyleBatching, 0);
+    }
+    
+    logProgress('Batch 6 loaded:', batch6Items.join(', '));
+  }
+  
+  /* OPTIMIZATION: Batch 7 - Event delegation with requestIdleCallback */
+  function loadBatch7() {
+    if (batchesLoaded.batch7) return;
+    batchesLoaded.batch7 = true;
+    
+    const batch7Items = [];
+    
+    const executeEventDelegation = function() {
+      // Optimize event delegation
+      const delegatedEvents = {};
+      window.optimizedDelegate = function(selector, event, handler) {
+        const key = event + ':' + selector;
+        if (!delegatedEvents[key]) {
+          delegatedEvents[key] = [];
+          document.addEventListener(event, function(e) {
+            const target = e.target.closest(selector);
+            if (target) {
+              delegatedEvents[key].forEach(function(h) {
+                h.call(target, e);
+              });
+            }
+          }, { passive: true });
+        }
+        delegatedEvents[key].push(handler);
+      };
+      
+      batch7Items.push('Event delegation');
+    };
+    
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(executeEventDelegation, { timeout: 3000 });
+    } else {
+      setTimeout(executeEventDelegation, 0);
+    }
+    
+    logProgress('Batch 7 loaded:', batch7Items.join(', '));
+  }
+  
+  /* OPTIMIZATION: Batch 8 - Chunk processing and lazy init with requestIdleCallback */
+  function loadBatch8() {
+    if (batchesLoaded.batch8) return;
+    batchesLoaded.batch8 = true;
+    
+    const batch8Items = [];
+    
+    const executeChunkProcessing = function() {
+      // Chunk processor for heavy operations
+      window.processInChunks = function(items, processor, callback) {
+        let index = 0;
+        const chunkSize = 10;
+        
+        function processChunk() {
+          const end = Math.min(index + chunkSize, items.length);
+          
+          for (let i = index; i < end; i++) {
+            processor(items[i], i);
+          }
+          
+          index = end;
+          
+          if (index < items.length) {
+            setTimeout(processChunk, 0);
+          } else if (callback) {
+            callback();
+          }
+        }
+        
+        processChunk();
+      };
+      
+      // Lazy initialize features
+      const initializedFeatures = {};
+      window.lazyInit = function(featureName, initFunction) {
+        if (initializedFeatures[featureName]) return;
+        initializedFeatures[featureName] = true;
+        
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(initFunction, { timeout: 2000 });
+        } else {
+          setTimeout(initFunction, 100);
+        }
+      };
+      
+      batch8Items.push('Chunk processing, Lazy init');
+    };
+    
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(executeChunkProcessing, { timeout: 3000 });
+    } else {
+      setTimeout(executeChunkProcessing, 0);
+    }
+    
+    logProgress('Batch 8 loaded:', batch8Items.join(', '));
     
     // Clear interval after all batches loaded
     if (intervalTimer) {
@@ -175,6 +389,18 @@
         case 4:
           loadBatch4();
           break;
+        case 5:
+          loadBatch5();
+          break;
+        case 6:
+          loadBatch6();
+          break;
+        case 7:
+          loadBatch7();
+          break;
+        case 8:
+          loadBatch8();
+          break;
         default:
           clearInterval(intervalTimer);
           logProgress('SetInterval timer stopped: all batches complete');
@@ -199,6 +425,10 @@
         case 2: loadBatch2(); break;
         case 3: loadBatch3(); break;
         case 4: loadBatch4(); break;
+        case 5: loadBatch5(); break;
+        case 6: loadBatch6(); break;
+        case 7: loadBatch7(); break;
+        case 8: loadBatch8(); break;
       }
     },
     getStatus: function() {
