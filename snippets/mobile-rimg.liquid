@@ -66,7 +66,7 @@
   {% comment %}
     Defaults
   {% endcomment %}
-  {% assign lazy = lazy | default: false %}
+  {% assign lazy = lazy | default: true %}
   {% assign background = background | default: false %}
   {% assign size_default = img.width | append: 'x' | append: img.height %}
   {% assign size = size | default: size_default %}
@@ -329,14 +329,10 @@
   {% endif %}
 
   <img
-    {% if rimg_format == '' %}
-      src="{{ img | img_url: rimg_size, crop: crop }}"
-    {% else %}
-      src="{{ img | img_url: rimg_size, crop: crop, format: rimg_format }}"
-    {% endif %}
-    alt="{{ rimg_alt }}"
-
     {% if lazy %}
+      data-src="{% if rimg_format == '' %}{{ img | img_url: rimg_size, crop: crop }}{% else %}{{ img | img_url: rimg_size, crop: crop, format: rimg_format }}{% endif %}"
+      src="{{ rimg_placeholder }}"
+      data-srcset="{{ rimg_density_srcset }}"
       loading="lazy"
       data-rimg="lazy"
       data-rimg-scale="{{ rimg_scale }}"
@@ -344,11 +340,12 @@
       data-rimg-max="{{ img.width }}x{{ img.height }}"
       data-rimg-crop="{{ crop }}"
       {% if placeholder %}data-rimg-placeholder="{{ placeholder }}"{% endif %}
-      srcset="{{ rimg_placeholder }}"
     {% else %}
+      src="{% if rimg_format == '' %}{{ img | img_url: rimg_size, crop: crop }}{% else %}{{ img | img_url: rimg_size, crop: crop, format: rimg_format }}{% endif %}"
       data-rimg
       srcset="{{ rimg_density_srcset }}"
     {% endif %}
+    alt="{{ rimg_alt }}"
 
     {% if class != blank %}class="{{ class }}"{% endif %}
     {% if style != blank %}style="{{ style }}"{% endif %}
