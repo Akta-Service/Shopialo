@@ -33,35 +33,37 @@
     console.log(`[Progressive Loader] ${message}`, details || '');
   }
   
-  /* OPTIMIZATION: Batch 1 - Core JS and critical functionality */
+  /* OPTIMIZATION: Batch 1 - Core JavaScript files (Empire.js + Swiper) */
   function loadBatch1() {
     if (batchesLoaded.batch1) return;
     batchesLoaded.batch1 = true;
     
     const batch1Items = [];
     
-    // Load Empire.js (core theme functionality)
-    if (!window.Empire) {
-      const empireScript = document.createElement('script');
-      empireScript.src = document.querySelector('[data-scripts]')?.getAttribute('data-shopify-api-url')?.replace('api.jquery.js', 'empire.min.js') || '/assets/empire.min.js';
-      empireScript.async = true;
-      empireScript.defer = true;
-      document.body.appendChild(empireScript);
-      batch1Items.push('JS: empire.min.js');
-    }
+    // Load Empire.js (main theme script) with all required attributes
+    const empireScript = document.createElement('script');
+    const empireMinified = document.querySelector('meta[name="empire-minified"]')?.content === 'true';
+    empireScript.src = empireMinified ? 
+      document.querySelector('link[href*="empire.min.js"]')?.href || '' :
+      document.querySelector('link[href*="empire.js"]')?.href || '';
+    empireScript.setAttribute('data-scripts', '');
+    empireScript.setAttribute('data-shopify-api-url', document.querySelector('meta[name="shopify-api-url"]')?.content || '');
+    empireScript.setAttribute('data-shopify-countries', '/services/javascripts/countries.js');
+    empireScript.setAttribute('data-shopify-common', document.querySelector('meta[name="shopify-common-url"]')?.content || '');
+    empireScript.setAttribute('data-shopify-cart', document.querySelector('meta[name="shopify-cart-url"]')?.content || '');
+    empireScript.setAttribute('data-pxu-polyfills', document.querySelector('meta[name="polyfills-url"]')?.content || '');
+    empireScript.defer = true;
+    document.body.appendChild(empireScript);
+    batch1Items.push('JS: empire.js');
     
-    // Load Swiper if not already loaded
-    if (!window.Swiper && document.querySelector('#mainSwiper')) {
-      const swiperScript = document.createElement('script');
-      swiperScript.src = document.querySelector('link[href*="swiper-bundle.min.js"]')?.href || '/assets/swiper-bundle.min.js';
-      swiperScript.async = true;
-      swiperScript.onload = function() {
-        batch1Items.push('JS: swiper-bundle.min.js');
-        if (typeof window.initProductSwiper === 'function') {
-          window.initProductSwiper(document);
-        }
-      };
+    // Load Swiper.js
+    const swiperScript = document.createElement('script');
+    const swiperLink = document.querySelector('link[href*="swiper-bundle.min.js"]');
+    if (swiperLink) {
+      swiperScript.src = swiperLink.href;
+      swiperScript.defer = true;
       document.body.appendChild(swiperScript);
+      batch1Items.push('JS: swiper-bundle.min.js');
     }
     
     logProgress('Batch 1 loaded:', batch1Items.join(', '));
