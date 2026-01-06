@@ -1,7 +1,6 @@
 <!doctype html>
 <html class="no-js no-touch" lang="{{ request.locale.iso_code }}">
   <head>
-{% include 'limespot' %}
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="IE=edge">
 
@@ -77,7 +76,25 @@
     {%- comment -%}Mobile-first resource hints for faster LCP{%- endcomment -%}
     <link rel="preload" href="{{ settings.type_menu | font_url }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" as="style" href="{{ 'theme.css' | asset_url }}">
-    <link rel="preload" as="script" href="{{ 'swiper-bundle.min.js' | asset_url }}" crossorigin>
+    {% if template.name == 'product' %}
+      <link rel="preload" as="script" href="{{ 'swiper-bundle.min.js' | asset_url }}" crossorigin>
+      {%- if settings.minify_scripts -%}
+        <link rel="preload" as="script" href="{{ 'empire.min.js' | asset_url }}" crossorigin>
+      {%- else -%}
+        <link rel="preload" as="script" href="{{ 'empire.js' | asset_url }}" crossorigin>
+      {%- endif -%}
+    {% else %}
+      <link rel="preload" as="script" href="{{ 'swiper-bundle.min.js' | asset_url }}" crossorigin>
+    {% endif %}
+    
+    {%- comment -%}Meta tags for progressive loader to access empire.js attributes{%- endcomment -%}
+    {% if template.name == 'product' %}
+      <meta name="empire-minified" content="{% if settings.minify_scripts %}true{% else %}false{% endif %}">
+      <meta name="shopify-api-url" content="{{ 'api.jquery.js' | shopify_asset_url }}">
+      <meta name="shopify-common-url" content="{{ 'shopify_common.js' | shopify_asset_url }}">
+      <meta name="shopify-cart-url" content="{{ 'jquery.cart.js' | asset_url }}">
+      <meta name="polyfills-url" content="{{ 'polyfills.min.js' | asset_url }}">
+    {% endif %}
     
     {%- comment -%}Preload LCP image for mobile (slideshow banner){%- endcomment -%}
     {% if template.name == 'index' %}
@@ -664,8 +681,10 @@
       <script src="{{ 'customer_area.js' | shopify_asset_url }}" defer></script>
     {%- endif -%}
     
-    {%- comment -%}Essential scripts for functionality{%- endcomment -%}
-    <script src="{{ 'swiper-bundle.min.js' | asset_url }}" defer></script>
+    {%- comment -%}Essential scripts - Swiper will be loaded via progressive loader on product pages{%- endcomment -%}
+    {% unless template.name == 'product' %}
+      <script src="{{ 'swiper-bundle.min.js' | asset_url }}" defer></script>
+    {% endunless %}
     
     {%- comment -%}Minimal Performance Optimizer - Safe for all functionality{%- endcomment -%}
     <script>
@@ -786,7 +805,8 @@
       </script>
     {% endunless %}
 
-    {%- comment -%}Load empire.js with aggressive optimization{%- endcomment -%}
+    {%- comment -%}Empire.js will be loaded via progressive loader on product pages{%- endcomment -%}
+    {% unless template.name == 'product' %}
     <script>
       // Preload empire.js but delay execution significantly
       (function() {
@@ -841,6 +861,7 @@
         setTimeout(loadEmpire, delay);
       })();
     </script>
+    {% endunless %}
     
     {%- comment -%}Aggressive main-thread optimization with mobile-specific enhancements{%- endcomment -%}
     <script>
