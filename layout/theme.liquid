@@ -161,6 +161,14 @@
                 }
               }
               
+              // Block Google Fonts CSS entirely (113.9 KiB) - use local fonts.css instead
+              if (node.nodeName === 'LINK' && node.href && node.href.indexOf('fonts.googleapis.com') !== -1) {
+                if (node.parentNode) {
+                  node.parentNode.removeChild(node);
+                }
+                return; // Exit early, font blocked
+              }
+              
               // Defer non-critical Shopify CSS (styles.css from apps)
               if (node.nodeName === 'LINK' && node.rel === 'stylesheet' && node.href) {
                 if (node.href.indexOf('cdn.shopify.com') !== -1 && 
