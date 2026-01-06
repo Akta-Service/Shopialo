@@ -103,30 +103,64 @@
 
     {{ content_for_header }}
 
-    {%- comment -%}CRITICAL: Intercept render-blocking scripts immediately for mobile LCP{%- endcomment -%}
+    {%- comment -%}CRITICAL: Block unused scripts to reduce 762 KiB unused JS{%- endcomment -%}
     <script>
       (function() {
         'use strict';
         var isMobile = window.innerWidth <= 768;
+        var jQueryLoaded = false;
+        var blockedScripts = [];
         
-        // Intercept and defer render-blocking scripts injected by content_for_header
+        // Block scripts entirely until user interaction (reduces unused JS by 762 KiB)
         var observer = new MutationObserver(function(mutations) {
           mutations.forEach(function(mutation) {
             mutation.addedNodes.forEach(function(node) {
               if (node.nodeName === 'SCRIPT' && node.src) {
-                // Defer personalizer.io (770ms render blocking)
-                if (node.src.indexOf('personalizer.io') !== -1) {
-                  node.defer = true;
-                  node.async = true;
+                var shouldBlock = false;
+                var scriptSrc = node.src;
+                
+                // Block portable-wallets entirely (79.7 KiB unused) - only load on checkout
+                if (scriptSrc.indexOf('portable-wallets') !== -1) {
+                  shouldBlock = true;
+                  blockedScripts.push({ src: scriptSrc, node: node });
                 }
-                // Defer non-critical Shopify scripts
-                if (node.src.indexOf('cdn.shopify.com') !== -1 && 
-                    (node.src.indexOf('portable-wallets') !== -1 || 
-                     node.src.indexOf('web-pixel') !== -1)) {
-                  node.defer = true;
-                  node.async = true;
+                
+                // Block duplicate jQuery versions (42.8 KiB unused)
+                if (scriptSrc.indexOf('jquery') !== -1 && scriptSrc.indexOf('googleapis.com') !== -1) {
+                  if (jQueryLoaded) {
+                    shouldBlock = true; // Block duplicate
+                  } else {
+                    jQueryLoaded = true;
+                    node.defer = true;
+                    node.async = true;
+                  }
+                }
+                
+                // Block Shopify preview bar on mobile (68.9 KiB unused)
+                if (isMobile && scriptSrc.indexOf('preview-bar') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                // Defer (not block) other non-critical scripts
+                if (!shouldBlock) {
+                  // Defer personalizer.io (770ms render blocking)
+                  if (scriptSrc.indexOf('personalizer.io') !== -1) {
+                    node.defer = true;
+                    node.async = true;
+                  }
+                  // Defer web-pixel scripts
+                  if (scriptSrc.indexOf('cdn.shopify.com') !== -1 && scriptSrc.indexOf('web-pixel') !== -1) {
+                    node.defer = true;
+                    node.async = true;
+                  }
+                }
+                
+                // Remove blocked scripts from DOM
+                if (shouldBlock && node.parentNode) {
+                  node.parentNode.removeChild(node);
                 }
               }
+              
               // Defer non-critical Shopify CSS (styles.css from apps)
               if (node.nodeName === 'LINK' && node.rel === 'stylesheet' && node.href) {
                 if (node.href.indexOf('cdn.shopify.com') !== -1 && 
@@ -148,6 +182,39 @@
         observer.observe(document.documentElement, {
           childList: true,
           subtree: true
+        });
+        
+        // Load blocked scripts on user interaction (only if needed)
+        var interactionEvents = ['click', 'scroll', 'touchstart'];
+        var loaded = false;
+        
+        function loadBlockedScripts() {
+          if (loaded) return;
+          loaded = true;
+          
+          // Only load if on checkout/cart pages
+          var isCheckout = window.location.pathname.indexOf('/checkout') !== -1 || 
+                          window.location.pathname.indexOf('/cart') !== -1;
+          
+          if (isCheckout && blockedScripts.length > 0) {
+            setTimeout(function() {
+              blockedScripts.forEach(function(item) {
+                var script = document.createElement('script');
+                script.src = item.src;
+                script.async = true;
+                script.defer = true;
+                document.body.appendChild(script);
+              });
+            }, 3000);
+          }
+          
+          interactionEvents.forEach(function(evt) {
+            window.removeEventListener(evt, loadBlockedScripts);
+          });
+        }
+        
+        interactionEvents.forEach(function(evt) {
+          window.addEventListener(evt, loadBlockedScripts, { passive: true, once: true });
         });
         
         // Stop observing after page load
