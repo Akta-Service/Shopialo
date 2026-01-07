@@ -132,6 +132,11 @@
                   shouldBlock = true;
                 }
                 
+                // Block Crazy Egg analytics
+                if (src.indexOf('crazyegg.com') !== -1 || src.indexOf('crazyegg') !== -1) {
+                  shouldBlock = true;
+                }
+                
                 if (shouldBlock) {
                   blockedScripts.push(src);
                   if (node.parentNode) {
@@ -226,6 +231,11 @@
                   shouldBlock = true;
                 }
                 
+                // Block Crazy Egg analytics
+                if (src.indexOf('crazyegg.com') !== -1 || src.indexOf('crazyegg') !== -1) {
+                  shouldBlock = true;
+                }
+                
                 if (shouldBlock) {
                   blockedScripts.push(src);
                   if (node.parentNode) {
@@ -307,13 +317,10 @@
                   blockedScripts.push({ src: scriptSrc, node: node });
                 }
                 
-                // Defer (not block) other non-critical scripts
-                if (!shouldBlock) {
-                  // Defer personalizer.io (770ms render blocking)
-                  if (scriptSrc.indexOf('personalizer.io') !== -1) {
-                    node.defer = true;
-                    node.async = true;
-                  }
+                // Block personalizer.io (750ms render blocking)
+                if (scriptSrc.indexOf('personalizer.io') !== -1 || scriptSrc.indexOf('edge.personalizer.io') !== -1) {
+                  shouldBlock = true;
+                  blockedScripts.push({ src: scriptSrc, node: node });
                 }
                 
                 // Remove blocked scripts from DOM
@@ -349,7 +356,7 @@
                 }
               }
               
-              // Defer non-critical Shopify CSS (styles.css from apps) - 750ms render blocking
+              // Defer non-critical Shopify CSS (styles.css from apps)
               if (node.nodeName === 'LINK' && node.rel === 'stylesheet' && node.href) {
                 if (node.href.indexOf('cdn.shopify.com') !== -1 && 
                     node.href.indexOf('styles.css') !== -1 &&
