@@ -10,9 +10,9 @@
     {%- comment -%}Personalizer.io deferred via MutationObserver to prevent render blocking{%- endcomment -%}
     
     {%- comment -%}Local fonts - eliminates external requests for faster loading{%- endcomment -%}
-    <link rel="preload" as="style" href="{{ 'fonts.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="{{ 'fonts.min.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
-      <link rel="stylesheet" href="{{ 'fonts.css' | asset_url }}">
+      <link rel="stylesheet" href="{{ 'fonts.min.css' | asset_url }}">
     </noscript>
 
     <title>
@@ -408,8 +408,8 @@
     
     
     {%- comment -%}Defer non-critical CSS{%- endcomment -%}
-    <link rel="preload" href="{{ 'custom.css' | asset_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{{ 'custom.css' | asset_url }}"></noscript>
+    <link rel="preload" href="{{ 'custom.min.css' | asset_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ 'custom.min.css' | asset_url }}"></noscript>
     
     {% unless settings.reduce_animations %}
       <link rel="preload" href="{{ 'ripple.css' | asset_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -957,7 +957,7 @@
     
     {%- comment -%}OPTIMIZATION: Product Page Progressive Loader - SetInterval based{%- endcomment -%}
     {% if template.name == 'product' %}
-      <script src="{{ 'product-page-progressive-loader.js' | asset_url }}" defer></script>
+      <script src="{{ 'product-page-progressive-loader.min.js' | asset_url }}" defer></script>
     {% endif %}
     
     {%- comment -%}Performance Testing (Development only){%- endcomment -%}
