@@ -349,11 +349,11 @@
                 }
               }
               
-              // Defer non-critical Shopify CSS (styles.css from apps)
+              // Defer non-critical Shopify CSS (styles.css from apps) - 750ms render blocking
               if (node.nodeName === 'LINK' && node.rel === 'stylesheet' && node.href) {
                 if (node.href.indexOf('cdn.shopify.com') !== -1 && 
                     node.href.indexOf('styles.css') !== -1 &&
-                    !node.href.indexOf('theme.css') !== -1) {
+                    node.href.indexOf('theme.css') === -1) {
                   node.rel = 'preload';
                   node.as = 'style';
                   node.onload = function() {
