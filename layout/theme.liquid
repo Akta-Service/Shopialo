@@ -5,6 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="IE=edge">
 
     {%- comment -%}Optimized resource hints - only critical origins{%- endcomment -%}
+    <link rel="preconnect" href="https://shopialo.com">
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     {%- comment -%}Personalizer.io deferred via MutationObserver to prevent render blocking{%- endcomment -%}
@@ -246,12 +247,31 @@
                 }
               }
               
-              // Block Google Fonts CSS entirely (113.9 KiB) - use local fonts.css instead
-              if (node.nodeName === 'LINK' && node.href && node.href.indexOf('fonts.googleapis.com') !== -1) {
-                if (node.parentNode) {
-                  node.parentNode.removeChild(node);
+              // Block ALL external font CSS (Google Fonts 113.85 KiB, Autoketing 40+ files, cdnfonts)
+              if (node.nodeName === 'LINK' && node.href) {
+                var shouldBlockFont = false;
+                
+                // Block Google Fonts CSS and font files (3,034ms critical path)
+                if (node.href.indexOf('fonts.googleapis.com') !== -1 || 
+                    node.href.indexOf('fonts.gstatic.com') !== -1) {
+                  shouldBlockFont = true;
                 }
-                return; // Exit early, font blocked
+                
+                // Block Autoketing font cascade (40+ CSS files at 2,900ms+)
+                if (node.href.indexOf('cdn.autoketing.org') !== -1 && 
+                    (node.href.indexOf('.css') !== -1 || node.href.indexOf('/css') !== -1)) {
+                  shouldBlockFont = true;
+                }
+                
+                // Block cdnfonts.com
+                if (node.href.indexOf('fonts.cdnfonts.com') !== -1) {
+                  shouldBlockFont = true;
+                }
+                
+                if (shouldBlockFont && node.parentNode) {
+                  node.parentNode.removeChild(node);
+                  return;
+                }
               }
               
               // Defer non-critical Shopify CSS (styles.css from apps)
