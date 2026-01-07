@@ -100,6 +100,91 @@
     {% if template.name == 'index' %}
       <link rel="preload" as="image" href="https://cdn.shopify.com/s/files/1/0270/4202/1474/files/Banner_web_movil_600x750.webp" media="(max-width: 768px)" fetchpriority="high">
     {% endif %}
+    
+    {%- comment -%}PRODUCT PAGE: Block unused scripts BEFORE content_for_header (reduces JS execution by 3.2s){%- endcomment -%}
+    {% if template.name == 'product' %}
+    <script>
+      (function() {
+        'use strict';
+        
+        // Immediately block high-execution scripts on product pages
+        // WPM: 2,118ms, Plerdy: 312ms, Clarity: 204ms, Autoketing: 102ms, Hextom: 97ms
+        
+        var blockedScripts = [];
+        var scriptBlocker = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            mutation.addedNodes.forEach(function(node) {
+              if (node.nodeName === 'SCRIPT' && node.src) {
+                var src = node.src;
+                var shouldBlock = false;
+                
+                // Block WPM tracking (2,118ms CPU time, 677ms eval)
+                if (src.indexOf('/wpm/') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                // Block Plerdy (312ms CPU time, 145ms eval)
+                if (src.indexOf('plerdy.com') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                // Block Clarity (204ms CPU time, 88ms eval)
+                if (src.indexOf('clarity.ms') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                // Block Autoketing (102ms CPU time, 78ms eval)
+                if (src.indexOf('autoketing.org') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                // Block Hextom (97ms CPU time)
+                if (src.indexOf('hextom.com') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                // Block Trekkie (55ms CPU time)
+                if (src.indexOf('trekkie.storefront') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                // Block preview-bar (202ms CPU time on product pages)
+                if (src.indexOf('preview-bar') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                // Block duplicate jQuery from googleapis
+                if (src.indexOf('jquery') !== -1 && src.indexOf('googleapis.com') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                if (shouldBlock) {
+                  blockedScripts.push(src);
+                  if (node.parentNode) {
+                    node.parentNode.removeChild(node);
+                  }
+                }
+              }
+            });
+          });
+        });
+        
+        // Start blocking immediately
+        scriptBlocker.observe(document.documentElement, {
+          childList: true,
+          subtree: true
+        });
+        
+        // Stop observing after page load
+        window.addEventListener('load', function() {
+          setTimeout(function() {
+            scriptBlocker.disconnect();
+            console.log('[Product Page] Blocked ' + blockedScripts.length + ' high-execution scripts');
+          }, 2000);
+        });
+      })();
+    </script>
+    {% endif %}
 
     {{ content_for_header }}
 
