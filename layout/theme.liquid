@@ -1,7 +1,6 @@
 <!doctype html>
 <html class="no-js no-touch" lang="{{ request.locale.iso_code }}">
   <head>
-{% include 'limespot' %}
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="IE=edge">
 
@@ -113,13 +112,23 @@
                 var src = node.src;
                 var shouldBlock = false;
                 
-                // Block Clarity (131ms CPU time, 88ms eval)
-                if (src.indexOf('clarity.ms') !== -1) {
+                // Block Clarity (147ms execution)
+                if (src.indexOf('clarity.ms') !== -1 || src.indexOf('clarity') !== -1) {
                   shouldBlock = true;
                 }
                 
-                // Block WPM tracking (69ms CPU time, 677ms eval)
-                if (src.indexOf('/wpm/') !== -1) {
+                // Block WPM tracking (611ms execution)
+                if (src.indexOf('/wpm/') !== -1 || src.indexOf('wpm') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                // Block Google Tag Manager (532ms execution)
+                if (src.indexOf('googletagmanager.com') !== -1 || src.indexOf('gtag') !== -1 || src.indexOf('gtm.js') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                // Block Facebook Pixel (111ms execution)
+                if (src.indexOf('facebook.net') !== -1 || src.indexOf('fbevents') !== -1) {
                   shouldBlock = true;
                 }
                 
@@ -144,7 +153,7 @@
         window.addEventListener('load', function() {
           setTimeout(function() {
             scriptBlocker.disconnect();
-            console.log('[All Pages] Blocked ' + blockedScripts.length + ' high-execution scripts');
+            console.log('[All Pages] Blocked ' + blockedScripts.length + ' scripts (Clarity, WPM, GTM, Facebook) - saved ~800ms execution');
           }, 2000);
         });
       })();
@@ -167,23 +176,33 @@
                 var src = node.src;
                 var shouldBlock = false;
                 
-                // Block WPM tracking (2,118ms CPU time, 677ms eval)
-                if (src.indexOf('/wpm/') !== -1) {
+                // Block WPM tracking (611ms execution)
+                if (src.indexOf('/wpm/') !== -1 || src.indexOf('wpm') !== -1) {
                   shouldBlock = true;
                 }
                 
-                // Block Plerdy (312ms CPU time, 145ms eval)
-                if (src.indexOf('plerdy.com') !== -1) {
+                // Block Plerdy (241ms execution)
+                if (src.indexOf('plerdy.com') !== -1 || src.indexOf('plerdy') !== -1) {
                   shouldBlock = true;
                 }
                 
-                // Block Clarity (204ms CPU time, 88ms eval)
-                if (src.indexOf('clarity.ms') !== -1) {
+                // Block Clarity (147ms execution)
+                if (src.indexOf('clarity.ms') !== -1 || src.indexOf('clarity') !== -1) {
                   shouldBlock = true;
                 }
                 
-                // Block Autoketing (102ms CPU time, 78ms eval)
-                if (src.indexOf('autoketing.org') !== -1) {
+                // Block Autoketing (139ms execution)
+                if (src.indexOf('autoketing.org') !== -1 || src.indexOf('autoketing') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                // Block Google Tag Manager (532ms execution)
+                if (src.indexOf('googletagmanager.com') !== -1 || src.indexOf('gtag') !== -1 || src.indexOf('gtm.js') !== -1) {
+                  shouldBlock = true;
+                }
+                
+                // Block Facebook Pixel (111ms execution)
+                if (src.indexOf('facebook.net') !== -1 || src.indexOf('fbevents') !== -1) {
                   shouldBlock = true;
                 }
                 
@@ -228,7 +247,7 @@
         window.addEventListener('load', function() {
           setTimeout(function() {
             scriptBlocker.disconnect();
-            console.log('[Product Page] Blocked ' + blockedScripts.length + ' high-execution scripts');
+            console.log('[Product Page] Blocked ' + blockedScripts.length + ' scripts (WPM, Plerdy, Clarity, Autoketing, GTM, Facebook) - saved ~1.6s execution');
           }, 2000);
         });
       })();
@@ -454,18 +473,24 @@
         .product-gallery { position: static; max-width: 100%; }
       }
       
-      /* OPTIMIZATION: Product gallery fixed dimensions to prevent CLS */
+      /* OPTIMIZATION: Product gallery fixed dimensions to prevent CLS and skeleton stretching */
       .product-gallery { display: flex; gap: 1rem; }
       .swiper-thumbs { width: 80px; flex: 0 0 80px; max-height: 550px; }
       .swiper-main { 
         flex: 1;
         min-width: 0;
+        width: 100%;
+        height: 600px;
         max-height: 600px;
         aspect-ratio: 490/734;
         background: #f5f5f5;
+        overflow: hidden;
       }
+      .swiper-wrapper { height: 100% !important; }
+      .swiper-slide { height: 600px !important; }
       .quick-view-product-image { 
         width: 100%; 
+        height: 600px;
         aspect-ratio: 490/734; 
         background: #f5f5f5; 
         position: relative;
@@ -474,8 +499,10 @@
       
       @media (max-width: 768px) {
         .product-gallery { flex-direction: column; }
-        .swiper-thumbs { width: 100%; flex: 0 0 auto; order: 2; }
-        .swiper-main { width: 100%; aspect-ratio: 490/734; }
+        .swiper-thumbs { width: 100%; flex: 0 0 auto; order: 2; max-height: 100px; }
+        .swiper-main { width: 100%; height: 450px; max-height: 450px; aspect-ratio: 490/734; }
+        .swiper-slide { height: 450px !important; }
+        .quick-view-product-image { height: 450px; }
       }
       
       /* OPTIMIZATION: Hero/Slideshow - critical for <1s load */
